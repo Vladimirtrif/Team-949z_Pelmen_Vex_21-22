@@ -76,12 +76,12 @@ void autonomous() {}
  */
 void opcontrol() {
 	pros::Controller master(pros::E_CONTROLLER_MASTER);
-	pros::Motor left_mtr(LeftMotor1);
-	pros::Motor right_mtr(RightMotor1);
+	pros::Motor left_mtr(LeftMotor2);
+	pros::Motor right_mtr(RightMotor2);
 
 	while (true) {
-		pros::Motor left_wheels (LeftMotor1);
-  		pros::Motor right_wheels (RightMotor1);
+		pros::Motor left_wheels (LeftMotor1, LeftMotor2);
+  		pros::Motor right_wheels (RightMotor1,RightMotor2);
   		pros::Controller master (CONTROLLER_MASTER);
 		pros::lcd::print(0, "%d %d %d", (pros::lcd::read_buttons() & LCD_BTN_LEFT) >> 2,
 		                 (pros::lcd::read_buttons() & LCD_BTN_CENTER) >> 1,
