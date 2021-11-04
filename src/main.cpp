@@ -75,7 +75,6 @@ void autonomous() {}
  * task, not resume it from where it left off.
  */
 void opcontrol() {
-	pros::Controller master(pros::E_CONTROLLER_MASTER);
 	pros::Motor left_mtr(LeftMotor2);
 	pros::Motor right_mtr(RightMotor2);
 
