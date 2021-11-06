@@ -72,10 +72,10 @@ void opcontrol(void);
 
 
 
-#define LeftMotor1 11
-#define RightMotor1 1
-#define LeftMotor2 20
-#define RightMotor2 10
+#define LeftMotor1 8
+#define RightMotor1 19
+#define LeftMotor2 11
+#define RightMotor2 20
 
 
 
