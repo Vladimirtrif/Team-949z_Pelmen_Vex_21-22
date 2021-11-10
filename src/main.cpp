@@ -92,9 +92,27 @@ void opcontrol()
 		pros::lcd::print(0, "%d %d %d", (pros::lcd::read_buttons() & LCD_BTN_LEFT) >> 2,
 						 (pros::lcd::read_buttons() & LCD_BTN_CENTER) >> 1,
 						 (pros::lcd::read_buttons() & LCD_BTN_RIGHT) >> 0);
+<<<<<<< Updated upstream
 		int left = master.get_analog(ANALOG_LEFT_Y);
 		int right = master.get_analog(ANALOG_LEFT_Y);
 
+=======
+		int leftSpeed = 0;
+		int rightSpeed = 0;
+		if (ANALOG_LEFT_X > 0)
+		{
+			leftspeed = master.get_analog(ANALOG_LEFT_Y);
+			rightspeed = master.get_analog((ANALOG_LEFT_Y(abs(ANALOG_LEFT_Y - ANALOG_LEFT_X))) / (ANALOG_LEFT_X + ANALOG_LEFT_Y));
+		}
+		else
+		{
+			leftspeed = master.get_analog(ANALOG_LEFT_Y);
+			rightspeed = master.get_analog((ANALOG_LEFT_Y(abs(ANALOG_LEFT_Y + ANALOG_LEFT_X))) / (ANALOG_LEFT_X - ANALOG_LEFT_Y));
+		}
+
+		int left = master.get_analog(leftSpeed);
+		int right = master.get_analog(rightSpeed);
+>>>>>>> Stashed changes
 		left_back = left;
 		right_back = right;
 		left_front.move(master.get_analog(ANALOG_LEFT_Y));
