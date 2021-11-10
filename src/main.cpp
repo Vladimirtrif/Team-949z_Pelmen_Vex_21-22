@@ -95,7 +95,7 @@ void opcontrol()
 		int leftSpeed = 0;
 		int rightSpeed = 0;
 
-		if (ANALOG_LEFT_Y = 0)
+		if (ANALOG_LEFT_Y == 0)
 		{
 			leftSpeed = ANALOG_RIGHT_X;
 			rightSpeed = -ANALOG_RIGHT_X;
