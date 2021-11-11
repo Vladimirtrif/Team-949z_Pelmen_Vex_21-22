@@ -95,20 +95,20 @@ void opcontrol()
 		int leftSpeed = 0;
 		int rightSpeed = 0;
 
-		if (ANALOG_LEFT_Y == 0)
+		if (master.get_analog(ANALOG_LEFT_Y) == 0)
 		{
-			leftSpeed = ANALOG_RIGHT_X;
-			rightSpeed = -ANALOG_RIGHT_X;
+			leftSpeed = master.get_analog(ANALOG_RIGHT_X);
+			rightSpeed = master.get_analog(ANALOG_RIGHT_X)*-1;
 		}
-		else if (ANALOG_RIGHT_X >= 0)
+		else if (master.get_analog(ANALOG_RIGHT_X) >= 0)
 		{
-			leftSpeed = ANALOG_LEFT_Y;
-			rightSpeed = ANALOG_LEFT_Y - ANALOG_RIGHT_X;
+			leftSpeed = master.get_analog(ANALOG_LEFT_Y);
+			rightSpeed = master.get_analog(ANALOG_LEFT_Y) - master.get_analog(ANALOG_RIGHT_X);
 		}
-		else if (ANALOG_RIGHT_X < 0)
+		else if (master.get_analog(ANALOG_RIGHT_X) < 0)
 		{
-			leftSpeed = ANALOG_LEFT_Y + ANALOG_RIGHT_X;
-			rightSpeed = ANALOG_LEFT_Y + ANALOG_RIGHT_X;
+			leftSpeed = master.get_analog(ANALOG_LEFT_Y) + master.get_analog(ANALOG_RIGHT_X);
+			rightSpeed = master.get_analog(ANALOG_LEFT_Y) + master.get_analog(ANALOG_RIGHT_X);
 		}
 
 		left_back = leftSpeed;
