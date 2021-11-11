@@ -92,31 +92,57 @@ void opcontrol()
 		pros::lcd::print(0, "%d %d %d", (pros::lcd::read_buttons() & LCD_BTN_LEFT) >> 2,
 						 (pros::lcd::read_buttons() & LCD_BTN_CENTER) >> 1,
 						 (pros::lcd::read_buttons() & LCD_BTN_RIGHT) >> 0);
-<<<<<<< Updated upstream
-		int left = master.get_analog(ANALOG_LEFT_Y);
-		int right = master.get_analog(ANALOG_LEFT_Y);
-
-=======
 		int leftSpeed = 0;
 		int rightSpeed = 0;
-		if (ANALOG_LEFT_X > 0)
+
+		if (ANALOG_LEFT_Y == 0 && ANALOG_RIGHT_X == 0)
 		{
-			leftspeed = master.get_analog(ANALOG_LEFT_Y);
-			rightspeed = master.get_analog((ANALOG_LEFT_Y(abs(ANALOG_LEFT_Y - ANALOG_LEFT_X))) / (ANALOG_LEFT_X + ANALOG_LEFT_Y));
-		}
-		else
-		{
-			leftspeed = master.get_analog(ANALOG_LEFT_Y);
-			rightspeed = master.get_analog((ANALOG_LEFT_Y(abs(ANALOG_LEFT_Y + ANALOG_LEFT_X))) / (ANALOG_LEFT_X - ANALOG_LEFT_Y));
+			leftSpeed = 0;
+			rightSpeed = 0;
 		}
 
-		int left = master.get_analog(leftSpeed);
-		int right = master.get_analog(rightSpeed);
->>>>>>> Stashed changes
+		else if (ANALOG_LEFT_Y == 0 && ANALOG_RIGHT_X < 0)
+		{
+			leftSpeed = ANALOG_RIGHT_X;
+			rightSpeed = -ANALOG_RIGHT_X;
+		}
+
+		else if (ANALOG_LEFT_Y != 0 && ANALOG_RIGHT_X == 0)
+		{
+			leftSpeed = ANALOG_LEFT_Y;
+			rightSpeed = ANALOG_LEFT_Y;
+		}
+
+		else if (ANALOG_LEFT_Y > 0 && ANALOG_RIGHT_X > 0)
+		{
+			leftSpeed = ANALOG_LEFT_Y;
+			rightSpeed = (pow(ANALOG_LEFT_Y, 2)) / (ANALOG_RIGHT_X + ANALOG_LEFT_Y);
+		}
+
+		else if (ANALOG_LEFT_Y > 0 && ANALOG_RIGHT_X < 0)
+		{
+			leftSpeed = (pow(ANALOG_LEFT_Y, 2)) / (-ANALOG_RIGHT_X + ANALOG_LEFT_Y);
+			rightSpeed = ANALOG_LEFT_Y;
+		}
+
+		else if (ANALOG_LEFT_Y < 0 && ANALOG_RIGHT_X > 0)
+		{
+			leftSpeed = ANALOG_LEFT_Y;
+			rightSpeed = (pow(ANALOG_LEFT_Y, 2)) / (-ANALOG_RIGHT_X + ANALOG_LEFT_Y);
+		}
+
+		else if (ANALOG_LEFT_Y < 0 && ANALOG_RIGHT_X < 0)
+		{
+			leftSpeed = (pow(ANALOG_LEFT_Y, 2)) / (ANALOG_RIGHT_X + ANALOG_LEFT_Y);
+			rightSpeed = ANALOG_LEFT_Y;
+		}
+
+		left = master.get_analog(leftSpeed);
+		right = master.get_analog(rightSpeed);
 		left_back = left;
 		right_back = right;
-		left_front.move(master.get_analog(ANALOG_LEFT_Y));
-		right_front.move(master.get_analog(ANALOG_LEFT_Y));
+		left_front.move(master.get_analog(leftSpeed));
+		right_front.move(master.get_analog(rightSpeed));
 		pros::delay(10);
 	}
 }
