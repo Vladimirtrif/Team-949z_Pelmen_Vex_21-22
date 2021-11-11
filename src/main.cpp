@@ -137,12 +137,10 @@ void opcontrol()
 			rightSpeed = ANALOG_LEFT_Y;
 		}
 
-		left = master.get_analog(leftSpeed);
-		right = master.get_analog(rightSpeed);
-		left_back = left;
-		right_back = right;
-		left_front.move(master.get_analog(leftSpeed));
-		right_front.move(master.get_analog(rightSpeed));
+		left_back = leftSpeed;
+		right_back = rightSpeed;
+		left_front.move(leftSpeed);
+		right_front.move(rightSpeed);
 		pros::delay(10);
 	}
 }
