@@ -92,13 +92,29 @@ void opcontrol()
 		pros::lcd::print(0, "%d %d %d", (pros::lcd::read_buttons() & LCD_BTN_LEFT) >> 2,
 						 (pros::lcd::read_buttons() & LCD_BTN_CENTER) >> 1,
 						 (pros::lcd::read_buttons() & LCD_BTN_RIGHT) >> 0);
-		int left = master.get_analog(ANALOG_LEFT_Y);
-		int right = master.get_analog(ANALOG_LEFT_Y);
+		int leftSpeed = 0;
+		int rightSpeed = 0;
 
-		left_back = left;
-		right_back = right;
-		left_front.move(master.get_analog(ANALOG_LEFT_Y));
-		right_front.move(master.get_analog(ANALOG_LEFT_Y));
+		if (master.get_analog(ANALOG_LEFT_Y) == 0)
+		{
+			leftSpeed = master.get_analog(ANALOG_RIGHT_X);
+			rightSpeed = master.get_analog(ANALOG_RIGHT_X)*-1;
+		}
+		else if (master.get_analog(ANALOG_RIGHT_X) >= 0)
+		{
+			leftSpeed = master.get_analog(ANALOG_LEFT_Y);
+			rightSpeed = master.get_analog(ANALOG_LEFT_Y) - master.get_analog(ANALOG_RIGHT_X);
+		}
+		else if (master.get_analog(ANALOG_RIGHT_X) < 0)
+		{
+			leftSpeed = master.get_analog(ANALOG_LEFT_Y) + master.get_analog(ANALOG_RIGHT_X);
+			rightSpeed = master.get_analog(ANALOG_LEFT_Y) + master.get_analog(ANALOG_RIGHT_X);
+		}
+
+		left_back = leftSpeed;
+		right_back = rightSpeed;
+		left_front.move(leftSpeed);
+		right_front.move(rightSpeed);
 		pros::delay(10);
 	}
 }
