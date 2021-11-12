@@ -94,21 +94,23 @@ void opcontrol()
 						 (pros::lcd::read_buttons() & LCD_BTN_RIGHT) >> 0);
 		int leftSpeed = 0;
 		int rightSpeed = 0;
+		int analogY = master.get_analog(ANALOG_LEFT_Y);
+		int analogX = master.get_analog(ANALOG_RIGHT_X);
 
-		if (master.get_analog(ANALOG_LEFT_Y) == 0)
+		if (analogY == 0)
 		{
-			leftSpeed = master.get_analog(ANALOG_RIGHT_X);
-			rightSpeed = master.get_analog(ANALOG_RIGHT_X)*-1;
+			leftSpeed = analogX;
+			rightSpeed = analogX*-1;
 		}
-		else if (master.get_analog(ANALOG_RIGHT_X) >= 0)
+		else if (analogX >= 0)
 		{
-			leftSpeed = master.get_analog(ANALOG_LEFT_Y);
-			rightSpeed = master.get_analog(ANALOG_LEFT_Y) - master.get_analog(ANALOG_RIGHT_X);
+			leftSpeed = analogY;
+			rightSpeed = analogY - analogX;
 		}
-		else if (master.get_analog(ANALOG_RIGHT_X) < 0)
+		else if (analogX < 0)
 		{
-			leftSpeed = master.get_analog(ANALOG_LEFT_Y) + master.get_analog(ANALOG_RIGHT_X);
-			rightSpeed = master.get_analog(ANALOG_LEFT_Y) + master.get_analog(ANALOG_RIGHT_X);
+			leftSpeed = analogY + analogX;
+			rightSpeed = analogY + analogX;
 		}
 
 		left_back = leftSpeed;
