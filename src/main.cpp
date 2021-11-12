@@ -94,47 +94,49 @@ void opcontrol()
 						 (pros::lcd::read_buttons() & LCD_BTN_RIGHT) >> 0);
 		int leftSpeed = 0;
 		int rightSpeed = 0;
+		int analogY = master.get_analog(ANALOG_LEFT_Y);
+		int analogX = master.get_analog(ANALOG_RIGHT_X); 
 
-		if (ANALOG_LEFT_Y == 0 && ANALOG_RIGHT_X == 0)
+		if (analogY == 0 && analogX == 0)
 		{
 			leftSpeed = 0;
 			rightSpeed = 0;
 		}
 
-		else if (ANALOG_LEFT_Y == 0 && ANALOG_RIGHT_X < 0)
+		else if (analogY == 0 && analogX < 0)
 		{
-			leftSpeed = ANALOG_RIGHT_X;
-			rightSpeed = -ANALOG_RIGHT_X;
+			leftSpeed = analogX;
+			rightSpeed = 0 - analogX;
 		}
 
-		else if (ANALOG_LEFT_Y != 0 && ANALOG_RIGHT_X == 0)
+		else if (analogY != 0 && analogX == 0)
 		{
-			leftSpeed = ANALOG_LEFT_Y;
-			rightSpeed = ANALOG_LEFT_Y;
+			leftSpeed = analogY;
+			rightSpeed = analogY;
 		}
 
-		else if (ANALOG_LEFT_Y > 0 && ANALOG_RIGHT_X > 0)
+		else if (analogY > 0 && analogX > 0)
 		{
-			leftSpeed = ANALOG_LEFT_Y;
-			rightSpeed = (pow(ANALOG_LEFT_Y, 2)) / (ANALOG_RIGHT_X + ANALOG_LEFT_Y);
+			leftSpeed = analogY;
+			rightSpeed = (pow(analogY, 2)) / (analogX + analogY);
 		}
 
-		else if (ANALOG_LEFT_Y > 0 && ANALOG_RIGHT_X < 0)
+		else if (analogY > 0 && analogX < 0)
 		{
-			leftSpeed = (pow(ANALOG_LEFT_Y, 2)) / (-ANALOG_RIGHT_X + ANALOG_LEFT_Y);
-			rightSpeed = ANALOG_LEFT_Y;
+			leftSpeed = (pow(analogY, 2)) / (-analogX + analogY);
+			rightSpeed = analogY;
 		}
 
-		else if (ANALOG_LEFT_Y < 0 && ANALOG_RIGHT_X > 0)
+		else if (analogY < 0 && analogX > 0)
 		{
-			leftSpeed = ANALOG_LEFT_Y;
-			rightSpeed = (pow(ANALOG_LEFT_Y, 2)) / (-ANALOG_RIGHT_X + ANALOG_LEFT_Y);
+			leftSpeed = analogY;
+			rightSpeed = (pow(analogY, 2)) / (-analogX + analogY);
 		}
 
-		else if (ANALOG_LEFT_Y < 0 && ANALOG_RIGHT_X < 0)
+		else if (analogY < 0 && analogX < 0)
 		{
-			leftSpeed = (pow(ANALOG_LEFT_Y, 2)) / (ANALOG_RIGHT_X + ANALOG_LEFT_Y);
-			rightSpeed = ANALOG_LEFT_Y;
+			leftSpeed = (pow(analogY, 2)) / (analogX + analogY);
+			rightSpeed = analogY;
 		}
 
 		left_back = leftSpeed;
