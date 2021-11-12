@@ -102,8 +102,7 @@ void opcontrol()
 			leftSpeed = 0;
 			rightSpeed = 0;
 		}
-
-		else if (analogY == 0 && analogX < 0)
+		else if (analogY == 0 && analogX != 0)
 		{
 			leftSpeed = analogX;
 			rightSpeed = 0 - analogX;
