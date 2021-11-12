@@ -118,24 +118,24 @@ void opcontrol()
 		else if (analogY > 0 && analogX > 0)
 		{
 			leftSpeed = analogY;
-			rightSpeed = (pow(analogY, 2)) / (analogX + analogY);
+			rightSpeed = pow(analogY, 2) / (analogX + analogY);
 		}
 
 		else if (analogY > 0 && analogX < 0)
 		{
-			leftSpeed = (pow(analogY, 2)) / (-analogX + analogY);
+			leftSpeed = pow(analogY, 2) / (analogY - analogX);
 			rightSpeed = analogY;
 		}
 
 		else if (analogY < 0 && analogX > 0)
 		{
 			leftSpeed = analogY;
-			rightSpeed = (pow(analogY, 2)) / (-analogX + analogY);
+			rightSpeed = pow(analogY, 2) / (analogY - analogX);
 		}
 
 		else if (analogY < 0 && analogX < 0)
 		{
-			leftSpeed = (pow(analogY, 2)) / (analogX + analogY);
+			leftSpeed = pow(analogY, 2) / (analogX + analogY);
 			rightSpeed = analogY;
 		}
 
