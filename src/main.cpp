@@ -88,6 +88,7 @@ void opcontrol()
 	pros::Controller master(CONTROLLER_MASTER);
 	pros::Motor lift_Front(frontLift, MOTOR_GEARSET_36); // Pick correct gearset (36 is red)
 	pros::Motor lift_Back(backLift, MOTOR_GEARSET_36);
+	pros::Motor conveyor_Belt(conveyorPort, MOTOR_GEARSET_36);
 	lift_Front.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 	lift_Back.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 
@@ -165,6 +166,14 @@ void opcontrol()
 		}
 		else {
 			lift_Back.move_velocity(0);
+		}
+
+		if (master.get_digital(DIGITAL_B))
+		{
+			conveyor_Belt.move_velocity(75); 
+		}
+		else {
+			conveyor_Belt.move_velocity(0);
 		}
 
 		left_back = leftSpeed;

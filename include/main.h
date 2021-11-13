@@ -74,7 +74,7 @@ void opcontrol(void);
 #define RightMotor1 2
 #define LeftMotor2 11
 #define RightMotor2 2
-//#define covayorBelt 8
+#define coveyorPort 8
 #define frontLift 7
 #define backLift 10
 
