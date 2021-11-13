@@ -70,12 +70,12 @@ void opcontrol(void);
 }
 #endif
 
-
-
 #define LeftMotor1 9
 #define RightMotor1 2
 #define LeftMotor2 11
 #define RightMotor2 20
+#define frontLift 8
+#define backLift 7
 
 
 
@@ -85,4 +85,3 @@ void opcontrol(void);
  */
 //#include <iostream>
 #endif
-

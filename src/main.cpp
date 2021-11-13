@@ -83,12 +83,15 @@ void opcontrol()
 {
 	pros::Motor left_back(LeftMotor2);
 	pros::Motor right_back(RightMotor2, true);
+	pros::Motor left_front(LeftMotor1);
+	pros::Motor right_front(RightMotor1, true);
+	pros::Controller master(CONTROLLER_MASTER);
+	pros::Motor lift_Front(frontLift, MOTOR_GEARSET_36); // Pick correct gearset (36 is red)
+	pros::Motor lift_Back(backLift, MOTOR_GEARSET_06);
 
 	while (true)
 	{
-		pros::Motor left_front(LeftMotor1);
-		pros::Motor right_front(RightMotor1, true);
-		pros::Controller master(CONTROLLER_MASTER);
+
 		pros::lcd::print(0, "%d %d %d", (pros::lcd::read_buttons() & LCD_BTN_LEFT) >> 2,
 						 (pros::lcd::read_buttons() & LCD_BTN_CENTER) >> 1,
 						 (pros::lcd::read_buttons() & LCD_BTN_RIGHT) >> 0);
@@ -97,20 +100,69 @@ void opcontrol()
 		int analogY = master.get_analog(ANALOG_LEFT_Y);
 		int analogX = master.get_analog(ANALOG_RIGHT_X);
 
-		if (analogY == 0)
+		if (analogY == 0 && analogX == 0)
+		{
+			leftSpeed = 0;
+			rightSpeed = 0;
+		}
+		else if (analogY == 0 && analogX != 0)
 		{
 			leftSpeed = analogX;
-			rightSpeed = analogX*-1;
+			rightSpeed = 0 - analogX;
 		}
-		else if (analogX >= 0)
+
+		else if (analogY != 0 && analogX == 0)
 		{
 			leftSpeed = analogY;
-			rightSpeed = analogY - analogX;
+			rightSpeed = analogY;
 		}
-		else if (analogX < 0)
+
+		else if (analogY > 0 && analogX > 0)
 		{
-			leftSpeed = analogY + analogX;
-			rightSpeed = analogY + analogX;
+			leftSpeed = analogY;
+			rightSpeed = pow(analogY, 2) / (analogX + analogY);
+		}
+
+		else if (analogY > 0 && analogX < 0)
+		{
+			leftSpeed = pow(analogY, 2) / (analogY - analogX);
+			rightSpeed = analogY;
+		}
+
+		else if (analogY < 0 && analogX > 0)
+		{
+			leftSpeed = analogY;
+			rightSpeed = pow(analogY, 2) / (analogY - analogX);
+		}
+
+		else if (analogY < 0 && analogX < 0)
+		{
+			leftSpeed = pow(analogY, 2) / (analogX + analogY);
+			rightSpeed = analogY;
+		}
+
+		if (master.get_digital(DIGITAL_R1))
+		{
+			lift_Front.move_velocity(75); //pick a velocity for the lifting
+		}
+		else if (master.get_digital(DIGITAL_R2))
+		{
+			lift_Front.move_velocity(-75);
+		}
+		else {
+			lift_Front.move_velocity(0);
+		}
+
+		if (master.get_digital(DIGITAL_L1))
+		{
+			lift_Back.move_velocity(250); //pick a velocity for the lifting
+		}
+		else if (master.get_digital(DIGITAL_L2))
+		{
+			lift_Back.move_velocity(-250);
+		}
+		else {
+			lift_Back.move_velocity(0);
 		}
 
 		left_back = leftSpeed;
