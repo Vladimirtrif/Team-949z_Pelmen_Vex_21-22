@@ -155,11 +155,11 @@ void opcontrol()
 
 		if (master.get_digital(DIGITAL_L1))
 		{
-			lift_Back.move_velocity(250); //pick a velocity for the lifting
+			lift_Back.move_velocity(100); //pick a velocity for the lifting
 		}
 		else if (master.get_digital(DIGITAL_L2))
 		{
-			lift_Back.move_velocity(-250);
+			lift_Back.move_velocity(-100);
 		}
 		else {
 			lift_Back.move_velocity(0);
