@@ -91,6 +91,7 @@ void opcontrol()
 	pros::Motor conveyor_Belt(conveyorPort, MOTOR_GEARSET_36);
 	lift_Front.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 	lift_Back.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+	bool conveyor_state = false;
 
 	while (true)
 	{
@@ -152,7 +153,8 @@ void opcontrol()
 		{
 			lift_Front.move_velocity(-75);
 		}
-		else {
+		else
+		{
 			lift_Front.move_velocity(0);
 		}
 
@@ -164,16 +166,26 @@ void opcontrol()
 		{
 			lift_Back.move_velocity(-75);
 		}
-		else {
+		else
+		{
 			lift_Back.move_velocity(0);
 		}
 
-		if (master.get_digital(DIGITAL_B))
+		if (conveyor_state == true)
 		{
-			conveyor_Belt.move_velocity(75); 
+			conveyor_Belt.move_velocity(75);
+
+			if (master.get_digital(DIGITAL_B)) {
+				conveyor_state = false;
+			}
 		}
-		else {
+		else
+		{
 			conveyor_Belt.move_velocity(0);
+			
+			if (master.get_digital(DIGITAL_B)) {
+				conveyor_state = true;
+			}
 		}
 
 		left_back = leftSpeed;

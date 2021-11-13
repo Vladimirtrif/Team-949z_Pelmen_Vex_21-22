@@ -73,10 +73,10 @@ void opcontrol(void);
 #define LeftMotor1 9
 #define RightMotor1 2
 #define LeftMotor2 11
-#define RightMotor2 2
+#define RightMotor2 20
 #define conveyorPort 8
 #define frontLift 7
-#define backLift 10
+#define backLift 6
 
 
 
