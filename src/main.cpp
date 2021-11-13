@@ -87,7 +87,7 @@ void opcontrol()
 	pros::Motor right_front(RightMotor1, true);
 	pros::Controller master(CONTROLLER_MASTER);
 	pros::Motor lift_Front(frontLift, MOTOR_GEARSET_36); // Pick correct gearset (36 is red)
-	pros::Motor lift_Back(backLift, MOTOR_GEARSET_06);
+	pros::Motor lift_Back(backLift, MOTOR_GEARSET_36);
 
 	while (true)
 	{
@@ -155,11 +155,11 @@ void opcontrol()
 
 		if (master.get_digital(DIGITAL_L1))
 		{
-			lift_Back.move_velocity(100); //pick a velocity for the lifting
+			lift_Back.move_velocity(75); //pick a velocity for the lifting
 		}
 		else if (master.get_digital(DIGITAL_L2))
 		{
-			lift_Back.move_velocity(-100);
+			lift_Back.move_velocity(-75);
 		}
 		else {
 			lift_Back.move_velocity(0);
