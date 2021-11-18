@@ -86,7 +86,7 @@ void opcontrol()
 	pros::Motor left_front(LeftMotor1);
 	pros::Motor right_front(RightMotor1, true);
 	pros::Controller master(CONTROLLER_MASTER);
-	pros::Motor lift_Front(frontLift, MOTOR_GEARSET_36); // Pick correct gearset (36 is red)
+	pros::Motor lift_Front(frontLift, MOTOR_GEARSET_36, true); // Pick correct gearset (36 is red)
 	pros::Motor lift_Back(backLift, MOTOR_GEARSET_36);
 	pros::Motor conveyor_Belt(conveyorPort, MOTOR_GEARSET_36);
 	lift_Front.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
