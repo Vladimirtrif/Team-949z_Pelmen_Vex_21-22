@@ -175,7 +175,7 @@ void opcontrol()
 		{
 			conveyor_Belt.move_velocity(75);
 
-			if (master.get_digital(DIGITAL_B)) {
+			if (master.get_digital_new_press(DIGITAL_B)) {
 				conveyor_state = false;
 			}
 		}
@@ -183,7 +183,7 @@ void opcontrol()
 		{
 			conveyor_Belt.move_velocity(0);
 			
-			if (master.get_digital(DIGITAL_B)) {
+			if (master.get_digital_new_press(DIGITAL_B)) {
 				conveyor_state = true;
 			}
 		}
