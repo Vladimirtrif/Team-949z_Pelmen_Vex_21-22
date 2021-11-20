@@ -77,6 +77,7 @@ void opcontrol(void);
 #define conveyorPort 8
 #define frontLift 7
 #define backLift 6
+#define middleMotor 13
 
 
 

@@ -85,6 +85,7 @@ void opcontrol()
 	pros::Motor right_back(RightMotor2, true);
 	pros::Motor left_front(LeftMotor1);
 	pros::Motor right_front(RightMotor1, true);
+	pros::Motor middle_motor(middleMotor);
 	pros::Controller master(CONTROLLER_MASTER);
 	pros::Motor lift_Front(frontLift, MOTOR_GEARSET_36, true); // Pick correct gearset (36 is red)
 	pros::Motor lift_Back(backLift, MOTOR_GEARSET_36);
@@ -192,6 +193,7 @@ void opcontrol()
 		right_back = rightSpeed;
 		left_front.move(leftSpeed);
 		right_front.move(rightSpeed);
+		middle_motor.move(analogY);
 		pros::delay(10);
 	}
 }
