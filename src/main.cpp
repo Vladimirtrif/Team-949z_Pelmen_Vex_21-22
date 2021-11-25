@@ -86,6 +86,14 @@ void autonomous()
 	left_back.move_relative(1000, 200);
 	right_back.move_relative(1000, 200);
 	middle_motor.move_relative(1000, 200);
+	lift_Front.move_relative(150, -90);
+	lift_Back.move_relative(150, -90);
+	left_front.move_relative(2500, 200);
+	right_front.move_relative(2500, 200);
+	left_back.move_relative(3500, 200);
+	right_back.move_relative(3500, 200);
+	middle_motor.move_relative(3500, 200);
+
 }
 /**
  * Runs the operator control code. This function will be started in its own task
