@@ -148,11 +148,11 @@ void opcontrol()
 
 		if (master.get_digital(DIGITAL_R1))
 		{
-			lift_Front.move_velocity(75); //pick a velocity for the lifting
+			lift_Front.move_velocity(90); //pick a velocity for the lifting
 		}
 		else if (master.get_digital(DIGITAL_R2))
 		{
-			lift_Front.move_velocity(-75);
+			lift_Front.move_velocity(-90);
 		}
 		else
 		{
@@ -161,11 +161,11 @@ void opcontrol()
 
 		if (master.get_digital(DIGITAL_L1))
 		{
-			lift_Back.move_velocity(75); //pick a velocity for the lifting
+			lift_Back.move_velocity(90); //pick a velocity for the lifting
 		}
 		else if (master.get_digital(DIGITAL_L2))
 		{
-			lift_Back.move_velocity(-75);
+			lift_Back.move_velocity(-90);
 		}
 		else
 		{
@@ -193,7 +193,7 @@ void opcontrol()
 		right_back = rightSpeed;
 		left_front.move(leftSpeed);
 		right_front.move(rightSpeed);
-		middle_motor.move(analogY);
+		middle_motor.move((leftSpeed + rightSpeed)/2);
 		pros::delay(10);
 	}
 }
