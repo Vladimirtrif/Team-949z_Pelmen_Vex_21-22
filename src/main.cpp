@@ -65,7 +65,6 @@ void competition_initialize() {}
  * from where it left off.
  */
 void autonomous() {}
-
 /**
  * Runs the operator control code. This function will be started in its own task
  * with the default priority and stack size whenever the robot is enabled via
@@ -79,6 +78,26 @@ void autonomous() {}
  * operator control task will be stopped. Re-enabling the robot will restart the
  * task, not resume it from where it left off.
  */
+/*setting all the ports and motors
+pros::Motor left_back(LeftMotor2);
+pros::Motor right_back(RightMotor2, true);
+pros::Motor left_front(LeftMotor1);
+pros::Motor right_front(RightMotor1, true);
+pros::Motor middle_motor(middleMotor, true);
+pros::Controller master(CONTROLLER_MASTER);
+pros::Motor lift_Front(frontLift, MOTOR_GEARSET_36, true); // Pick correct gearset (36 is red)
+pros::Motor lift_Back(backLift, MOTOR_GEARSET_36);
+pros::Motor conveyor_Belt(conveyorPort, MOTOR_GEARSET_36);
+lift_Front.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+lift_Back.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+
+moving forward to goal
+left_front.move_relative(1000, 200);
+right_front.move_relative(1000, 200);
+left_back.move_relative(1000, 200);
+right_back.move_relative(1000, 200);
+middle_motor.move_relative(1000, 200);
+*/
 void opcontrol()
 {
 	pros::Motor left_back(LeftMotor2);
@@ -176,24 +195,26 @@ void opcontrol()
 		{
 			conveyor_Belt.move_velocity(75);
 
-			if (master.get_digital_new_press(DIGITAL_B)) {
+			if (master.get_digital_new_press(DIGITAL_B))
+			{
 				conveyor_state = false;
 			}
 		}
 		else
 		{
 			conveyor_Belt.move_velocity(0);
-			
-			if (master.get_digital_new_press(DIGITAL_B)) {
+
+			if (master.get_digital_new_press(DIGITAL_B))
+			{
 				conveyor_state = true;
 			}
 		}
 
-		left_back = leftSpeed;
-		right_back = rightSpeed;
-		left_front.move(leftSpeed);
-		right_front.move(rightSpeed);
-		middle_motor.move((leftSpeed + rightSpeed)/2);
+		left_back = leftSpeed*1.575;
+		right_back = rightSpeed*1.575;
+		left_front.move(leftSpeed*1.575);
+		right_front.move(rightSpeed*1.575);
+		middle_motor.move(((leftSpeed + rightSpeed) / 2)*1.575);
 		pros::delay(10);
 	}
 }
