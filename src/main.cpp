@@ -93,7 +93,6 @@ void autonomous()
 	left_back.move_relative(3500, 200);
 	right_back.move_relative(3500, 200);
 	middle_motor.move_relative(3500, 200);
-
 }
 /**
  * Runs the operator control code. This function will be started in its own task
@@ -134,46 +133,76 @@ void opcontrol()
 		int rightSpeed = 0;
 		int analogY = master.get_analog(ANALOG_LEFT_Y);
 		int analogX = master.get_analog(ANALOG_RIGHT_X);
+		bool car_katya_drive = false;
 
-		if (analogY == 0 && analogX == 0)
+		if (car_katya_drive == true)
 		{
-			leftSpeed = 0;
-			rightSpeed = 0;
-		}
-		else if (analogY == 0 && analogX != 0)
-		{
-			leftSpeed = analogX;
-			rightSpeed = 0 - analogX;
-		}
+			if (analogY == 0 && analogX == 0)
+			{
+				leftSpeed = 0;
+				rightSpeed = 0;
+			}
+			else if (analogY == 0 && analogX != 0)
+			{
+				leftSpeed = analogX;
+				rightSpeed = 0 - analogX;
+			}
 
-		else if (analogY != 0 && analogX == 0)
-		{
-			leftSpeed = analogY;
-			rightSpeed = analogY;
-		}
+			else if (analogY != 0 && analogX == 0)
+			{
+				leftSpeed = analogY;
+				rightSpeed = analogY;
+			}
 
-		else if (analogY > 0 && analogX > 0)
-		{
-			leftSpeed = analogY;
-			rightSpeed = pow(analogY, 2) / (analogX + analogY);
-		}
+			else if (analogY > 0 && analogX > 0)
+			{
+				leftSpeed = analogY;
+				rightSpeed = pow(analogY, 2) / (analogX + analogY);
+			}
 
-		else if (analogY > 0 && analogX < 0)
-		{
-			leftSpeed = pow(analogY, 2) / (analogY - analogX);
-			rightSpeed = analogY;
-		}
+			else if (analogY > 0 && analogX < 0)
+			{
+				leftSpeed = pow(analogY, 2) / (analogY - analogX);
+				rightSpeed = analogY;
+			}
 
-		else if (analogY < 0 && analogX > 0)
-		{
-			leftSpeed = analogY;
-			rightSpeed = pow(analogY, 2) / (analogY - analogX);
-		}
+			else if (analogY < 0 && analogX > 0)
+			{
+				leftSpeed = analogY;
+				rightSpeed = pow(analogY, 2) / (analogY - analogX);
+			}
 
-		else if (analogY < 0 && analogX < 0)
+			else if (analogY < 0 && analogX < 0)
+			{
+				leftSpeed = pow(analogY, 2) / (analogX + analogY);
+				rightSpeed = analogY;
+			}
+		}
+		else
 		{
-			leftSpeed = pow(analogY, 2) / (analogX + analogY);
-			rightSpeed = analogY;
+			if (analogY == 0)
+			{
+				leftSpeed = analogX;
+				rightSpeed = -analogX;
+			}
+			else if (analogX >= 0 && analogY > 0)
+			{
+				leftSpeed = analogY;
+				rightSpeed = analogY - analogX;
+			}
+			else if (analogX < 0 && analogY > 0)
+			{
+				leftSpeed = analogY + analogX;
+				rightSpeed = analogY;
+			}
+			else if (analogX >= 0 && analogY < 0) {
+				leftSpeed = analogY;
+				rightSpeed = analogY + analogX;
+			}
+			else if (analogX < 0 && analogY < 0) {
+				leftSpeed = analogY - analogX;
+				rightSpeed = analogY;
+			}
 		}
 
 		if (master.get_digital(DIGITAL_R1))
