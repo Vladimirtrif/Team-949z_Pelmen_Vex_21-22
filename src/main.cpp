@@ -74,7 +74,7 @@ void autonomous()
 	pros::Motor right_front(RightMotor1, true);
 	pros::Motor middle_motor(middleMotor, true);
 	pros::Controller master(CONTROLLER_MASTER);
-	pros::Motor lift_Front(frontLift, MOTOR_GEARSET_36); // Pick correct gearset (36 is red)
+	pros::Motor lift_Front(frontLift, MOTOR_GEARSET_36,true); // Pick correct gearset (36 is red)
 	pros::Motor lift_Back(backLift, MOTOR_GEARSET_36);
 	pros::Motor conveyor_Belt(conveyorPort, MOTOR_GEARSET_36);
 	lift_Front.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
@@ -86,13 +86,20 @@ void autonomous()
 	left_back.move_relative(1000, 200);
 	right_back.move_relative(1000, 200);
 	middle_motor.move_relative(1000, 200);
-	lift_Front.move_relative(2250, 90);
+	lift_Front.move_relative(-2250, 90);
 	lift_Back.move_relative(5000, 90);
-	left_front.move_relative(3500, 200);
-	right_front.move_relative(3500, 200);
-	left_back.move_relative(3500, 200);
-	right_back.move_relative(3500, 200);
-	middle_motor.move_relative(3500, 200);
+	left_front.move_relative(2500, 200);
+	right_front.move_relative(2500, 200);
+	left_back.move_relative(2500, 200);
+	right_back.move_relative(2500, 200);
+	middle_motor.move_relative(2500, 200);
+	pros::delay(1000);
+	lift_Front.move_relative(2250, 90);
+	left_front.move_relative(-3000, 200);
+	right_front.move_relative(-3000, 200);
+	left_back.move_relative(-3000, 200);
+	right_back.move_relative(-3000, 200);
+	middle_motor.move_relative(-3000, 200);
 
 
 	
