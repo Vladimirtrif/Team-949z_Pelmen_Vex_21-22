@@ -75,7 +75,7 @@ void autonomous()
 	pros::Motor middle_motor(middleMotor, true);
 	pros::Controller master(CONTROLLER_MASTER);
 	pros::Motor lift_Front(frontLift, MOTOR_GEARSET_36); // Pick correct gearset (36 is red)
-	pros::Motor lift_Back(backLift, MOTOR_GEARSET_36, true);
+	pros::Motor lift_Back(backLift, MOTOR_GEARSET_36);
 	pros::Motor conveyor_Belt(conveyorPort, MOTOR_GEARSET_36);
 	lift_Front.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 	lift_Back.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
@@ -93,6 +93,8 @@ void autonomous()
 	left_back.move_relative(3500, 200);
 	right_back.move_relative(3500, 200);
 	middle_motor.move_relative(3500, 200);
+
+
 	
 }
 /**
@@ -122,7 +124,8 @@ void opcontrol()
 	pros::Motor conveyor_Belt(conveyorPort, MOTOR_GEARSET_36);
 	lift_Front.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 	lift_Back.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-	bool conveyor_state = false;
+	bool conveyor_up = false;
+	bool conveyor_down =  false;
 
 	while (true)
 	{
@@ -232,23 +235,20 @@ void opcontrol()
 			lift_Back.move_velocity(0);
 		}
 
-		if (conveyor_state == true)
-		{
+		if (master.get_digital_new_press(DIGITAL_B) && conveyor_up == false) {
+			conveyor_down = false;
+			conveyor_up = true;
 			conveyor_Belt.move_velocity(75);
-
-			if (master.get_digital_new_press(DIGITAL_B))
-			{
-				conveyor_state = false;
-			}
 		}
-		else
-		{
+		else if (master.get_digital_new_press(DIGITAL_X) && conveyor_down == false) {
+			conveyor_down = true;
+			conveyor_up = false;
+			conveyor_Belt.move_velocity(-75);
+		}
+		if (master.get_digital_new_press(DIGITAL_Y)) {
+			conveyor_down = false;
+			conveyor_up = false;
 			conveyor_Belt.move_velocity(0);
-
-			if (master.get_digital_new_press(DIGITAL_B))
-			{
-				conveyor_state = true;
-			}
 		}
 
 		left_back = leftSpeed * 1.574;
