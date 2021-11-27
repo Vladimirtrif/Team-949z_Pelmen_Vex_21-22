@@ -88,18 +88,24 @@ void autonomous()
 	middle_motor.move_relative(1000, 200);
 	lift_Front.move_relative(-2250, 90);
 	lift_Back.move_relative(5000, 90);
-	left_front.move_relative(2500, 200);
-	right_front.move_relative(2500, 200);
-	left_back.move_relative(2500, 200);
-	right_back.move_relative(2500, 200);
-	middle_motor.move_relative(2500, 200);
-	pros::delay(1000);
-	lift_Front.move_relative(2250, 90);
-	left_front.move_relative(-3000, 200);
-	right_front.move_relative(-3000, 200);
-	left_back.move_relative(-3000, 200);
-	right_back.move_relative(-3000, 200);
-	middle_motor.move_relative(-3000, 200);
+	left_front.move_relative(3500, 200);
+	right_front.move_relative(3500, 200);
+	left_back.move_relative(3500, 200);
+	right_back.move_relative(3500, 200);
+	middle_motor.move_relative(3500, 200);
+	pros::delay(1600);
+	left_front.move_relative(250, 150);
+	right_front.move_relative(250, 150);
+	left_back.move_relative(250, 150);
+	right_back.move_relative(250, 150);
+	middle_motor.move_relative(250, 150);
+	lift_Front.move_relative(2250, 100);
+	pros::delay(250);
+	left_front.move_relative(-2500, 200);
+	right_front.move_relative(-2500, 200);
+	left_back.move_relative(-2500, 200);
+	right_back.move_relative(-2500, 200);
+	middle_motor.move_relative(-2500, 200);
 
 
 	
