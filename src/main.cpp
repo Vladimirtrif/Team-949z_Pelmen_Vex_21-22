@@ -138,7 +138,7 @@ void opcontrol()
 	lift_Back.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 	bool conveyor_up = false;
 	bool conveyor_down =  false;
-	int dead_Zone = 10;
+	int dead_Zone = 10; //the deadzone for the joysticks
 
 	while (true)
 	{
