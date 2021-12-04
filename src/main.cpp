@@ -53,6 +53,45 @@ void disabled() {}
  */
 void competition_initialize() {}
 
+class Autonomous {
+	//setting all the ports and motors
+	pros::Motor left_back{LeftMotor2};
+	pros::Motor right_back{RightMotor2, true};
+	pros::Motor left_front{LeftMotor1};
+	pros::Motor right_front{RightMotor1, true};
+	pros::Motor middle_motor{middleMotor, true};
+	pros::Controller master{CONTROLLER_MASTER};
+	pros::Motor lift_Front{frontLift, MOTOR_GEARSET_36,true}; // Pick correct gearset (36 is red)
+	pros::Motor lift_Back{backLift, MOTOR_GEARSET_36};
+	pros::Motor conveyor_Belt{conveyorPort, MOTOR_GEARSET_36};
+
+	void Move(int ticks, int speed) {
+		left_front.move_relative(ticks, speed);
+		right_front.move_relative(ticks, speed);
+		left_back.move_relative(ticks, speed);
+		right_back.move_relative(ticks, speed);
+		middle_motor.move_relative(ticks, speed);
+	}
+
+	public: void run() {
+		lift_Front.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+		lift_Back.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+
+		//moving forward to goal
+		Move(3000, 200);
+
+		lift_Front.move_relative(-3000, 100);
+		//lift_Back.move_relative(5000, 90);		
+
+		pros::delay(1325);
+
+		lift_Front.move_relative(2000, 100);
+		pros::delay(300);
+
+		Move(-2500, 200);
+	}
+};
+
 /**
  * Runs the user autonomous code. This function will be started in its own task
  * with the default priority and stack size whenever the robot is enabled via
@@ -66,50 +105,10 @@ void competition_initialize() {}
  */
 void autonomous()
 {
-
-	//setting all the ports and motors
-	pros::Motor left_back(LeftMotor2);
-	pros::Motor right_back(RightMotor2, true);
-	pros::Motor left_front(LeftMotor1);
-	pros::Motor right_front(RightMotor1, true);
-	pros::Motor middle_motor(middleMotor, true);
-	pros::Controller master(CONTROLLER_MASTER);
-	pros::Motor lift_Front(frontLift, MOTOR_GEARSET_36,true); // Pick correct gearset (36 is red)
-	pros::Motor lift_Back(backLift, MOTOR_GEARSET_36);
-	pros::Motor conveyor_Belt(conveyorPort, MOTOR_GEARSET_36);
-	lift_Front.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-	lift_Back.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-
-	//moving forward to goal
-	left_front.move_relative(1000, 200);
-	right_front.move_relative(1000, 200);
-	left_back.move_relative(1000, 200);
-	right_back.move_relative(1000, 200);
-	middle_motor.move_relative(1000, 200);
-	lift_Front.move_relative(-2250, 90);
-	lift_Back.move_relative(5000, 90);
-	left_front.move_relative(3500, 200);
-	right_front.move_relative(3500, 200);
-	left_back.move_relative(3500, 200);
-	right_back.move_relative(3500, 200);
-	middle_motor.move_relative(3500, 200);
-	pros::delay(1600);
-	left_front.move_relative(250, 150);
-	right_front.move_relative(250, 150);
-	left_back.move_relative(250, 150);
-	right_back.move_relative(250, 150);
-	middle_motor.move_relative(250, 150);
-	lift_Front.move_relative(2250, 100);
-	pros::delay(250);
-	left_front.move_relative(-2500, 200);
-	right_front.move_relative(-2500, 200);
-	left_back.move_relative(-2500, 200);
-	right_back.move_relative(-2500, 200);
-	middle_motor.move_relative(-2500, 200);
-
-
-	
+	Autonomous self_drive;
+	self_drive.run();
 }
+
 /**
  * Runs the operator control code. This function will be started in its own task
  * with the default priority and stack size whenever the robot is enabled via
@@ -139,6 +138,7 @@ void opcontrol()
 	lift_Back.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 	bool conveyor_up = false;
 	bool conveyor_down =  false;
+	int dead_Zone = 10;
 
 	while (true)
 	{
@@ -197,27 +197,31 @@ void opcontrol()
 		}
 		else
 		{
-			if (analogY == 0)
+			if (analogY == 0 && abs(analogX) > dead_Zone)
 			{
 				leftSpeed = analogX;
 				rightSpeed = -analogX;
 			}
-			else if (analogX >= 0 && analogY > 0)
+			else if (analogX >= dead_Zone && analogY > dead_Zone)
 			{
 				leftSpeed = analogY;
 				rightSpeed = analogY - analogX;
 			}
-			else if (analogX < 0 && analogY > 0)
+			else if (analogX < -dead_Zone && analogY > dead_Zone)
 			{
 				leftSpeed = analogY + analogX;
 				rightSpeed = analogY;
 			}
-			else if (analogX >= 0 && analogY < 0) {
+			else if (analogX >= dead_Zone && analogY < -dead_Zone) {
 				leftSpeed = analogY;
 				rightSpeed = analogY + analogX;
 			}
-			else if (analogX < 0 && analogY < 0) {
+			else if (analogX < -dead_Zone && analogY < -dead_Zone) {
 				leftSpeed = analogY - analogX;
+				rightSpeed = analogY;
+			}
+			else if (analogX == 0 && abs(analogY) > dead_Zone) {
+				leftSpeed = analogY;
 				rightSpeed = analogY;
 			}
 		}
