@@ -75,10 +75,9 @@ class Autonomous {
 
 	public: void run() {
 		lift_Front.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-		lift_Back.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 
 		//moving forward to goal
-		Move(3000, 200);
+		Move(3750, 200);
 
 		lift_Front.move_relative(-3000, 100);
 		//lift_Back.move_relative(5000, 90);		
