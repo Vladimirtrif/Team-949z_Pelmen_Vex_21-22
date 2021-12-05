@@ -77,17 +77,17 @@ class Autonomous {
 		lift_Front.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 
 		//moving forward to goal
-		Move(3750, 200);
+		Move(4100, 200);
 
-		lift_Front.move_relative(-3000, 100);
+		lift_Front.move_relative(-2900, 100);
 		//lift_Back.move_relative(5000, 90);		
 
-		pros::delay(1325);
+		pros::delay(1450);
 
 		lift_Front.move_relative(2000, 100);
-		pros::delay(300);
+		pros::delay(350);
 
-		Move(-2500, 200);
+		Move(-3000, 200);
 	}
 };
 
