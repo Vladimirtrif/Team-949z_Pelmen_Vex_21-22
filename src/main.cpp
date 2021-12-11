@@ -56,7 +56,7 @@ void competition_initialize() {}
 class Autonomous {
 	//setting all the ports and motors
 	pros::Motor left_back{LeftMotor2};
-	pros::Motor right_back{RightMotor2, true};
+	pros::Motor right_back{RightMotor2};
 	pros::Motor left_front{LeftMotor1};
 	pros::Motor right_front{RightMotor1, true};
 	pros::Motor middle_motor{middleMotor, true};
