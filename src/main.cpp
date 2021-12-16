@@ -131,7 +131,7 @@ void opcontrol()
 {
 	pros::Controller master(CONTROLLER_MASTER);
 	pros::Motor left_back(LeftMotor2);
-	pros::Motor right_back(RightMotor2);
+	pros::Motor right_back(RightMotor2, true);
 	pros::Motor left_front(LeftMotor1);
 	pros::Motor right_front(RightMotor1, true);
 	pros::Motor middle_right(RightMiddle);
