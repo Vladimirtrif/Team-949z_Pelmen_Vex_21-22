@@ -74,8 +74,8 @@ void opcontrol(void);
 #define RightMotor1 2
 #define LeftMotor2 11
 #define RightMotor2 20
-#define LeftMiddle 8
-#define RightMiddle 13
+#define LeftMiddle 1
+#define RightMiddle 5
 #define frontLift 7
 #define backLift 6
 
