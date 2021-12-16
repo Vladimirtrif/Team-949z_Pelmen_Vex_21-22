@@ -53,34 +53,39 @@ void disabled() {}
  */
 void competition_initialize() {}
 
-class Autonomous {
+class Autonomous
+{
 	//setting all the ports and motors
 	pros::Motor left_back{LeftMotor2};
 	pros::Motor right_back{RightMotor2, true};
 	pros::Motor left_front{LeftMotor1};
 	pros::Motor right_front{RightMotor1, true};
-	pros::Motor middle_motor{middleMotor, true};
+	pros::Motor middle_right{RightMiddle, true};
+	pros::Motor middle_left{LeftMiddle};
 	pros::Controller master{CONTROLLER_MASTER};
-	pros::Motor lift_Front{frontLift, MOTOR_GEARSET_36,true}; // Pick correct gearset (36 is red)
+	pros::Motor lift_Front{frontLift, MOTOR_GEARSET_36, true}; // Pick correct gearset (36 is red)
 	pros::Motor lift_Back{backLift, MOTOR_GEARSET_36};
-	pros::Motor conveyor_Belt{conveyorPort, MOTOR_GEARSET_36};
 
-	void Move(int ticks, int speed) {
+	void Move(int ticks, int speed)
+	{
 		left_front.move_relative(ticks, speed);
 		right_front.move_relative(ticks, speed);
 		left_back.move_relative(ticks, speed);
 		right_back.move_relative(ticks, speed);
-		middle_motor.move_relative(ticks, speed);
+		middle_left.move_relative(ticks, speed);
+		middle_right.move_relative(ticks, speed);
 	}
 
-	public: void run() {
+public:
+	void run()
+	{
 		lift_Front.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 
 		//moving forward to goal
 		Move(4100, 200);
 
 		lift_Front.move_relative(-2900, 100);
-		//lift_Back.move_relative(5000, 90);		
+		//lift_Back.move_relative(5000, 90);
 
 		pros::delay(1450);
 
@@ -128,15 +133,15 @@ void opcontrol()
 	pros::Motor right_back(RightMotor2, true);
 	pros::Motor left_front(LeftMotor1);
 	pros::Motor right_front(RightMotor1, true);
-	pros::Motor middle_motor(middleMotor, true);
+	pros::Motor middle_right(RightMiddle, true);
+	pros::Motor middle_left(LeftMiddle);
 	pros::Controller master(CONTROLLER_MASTER);
 	pros::Motor lift_Front(frontLift, MOTOR_GEARSET_36, true); // Pick correct gearset (36 is red)
 	pros::Motor lift_Back(backLift, MOTOR_GEARSET_36);
-	pros::Motor conveyor_Belt(conveyorPort, MOTOR_GEARSET_36);
 	lift_Front.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 	lift_Back.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 	bool conveyor_up = false;
-	bool conveyor_down =  false;
+	bool conveyor_down = false;
 	int dead_Zone = 10; //the deadzone for the joysticks
 
 	while (true)
@@ -149,129 +154,70 @@ void opcontrol()
 		int rightSpeed = 0;
 		int analogY = master.get_analog(ANALOG_LEFT_Y);
 		int analogX = master.get_analog(ANALOG_RIGHT_X);
-		bool car_katya_drive = false;
 
-		if (car_katya_drive == true)
+		if (analogY == 0 && abs(analogX) > dead_Zone)
 		{
-			if (analogY == 0 && analogX == 0)
-			{
-				leftSpeed = 0;
-				rightSpeed = 0;
-			}
-			else if (analogY == 0 && analogX != 0)
-			{
-				leftSpeed = analogX;
-				rightSpeed = 0 - analogX;
-			}
-
-			else if (analogY != 0 && analogX == 0)
-			{
-				leftSpeed = analogY;
-				rightSpeed = analogY;
-			}
-
-			else if (analogY > 0 && analogX > 0)
-			{
-				leftSpeed = analogY;
-				rightSpeed = pow(analogY, 2) / (analogX + analogY);
-			}
-
-			else if (analogY > 0 && analogX < 0)
-			{
-				leftSpeed = pow(analogY, 2) / (analogY - analogX);
-				rightSpeed = analogY;
-			}
-
-			else if (analogY < 0 && analogX > 0)
-			{
-				leftSpeed = analogY;
-				rightSpeed = pow(analogY, 2) / (analogY - analogX);
-			}
-
-			else if (analogY < 0 && analogX < 0)
-			{
-				leftSpeed = pow(analogY, 2) / (analogX + analogY);
-				rightSpeed = analogY;
-			}
+			leftSpeed = analogX;
+			rightSpeed = -analogX;
 		}
-		else
+		else if (analogX >= dead_Zone && analogY > dead_Zone)
 		{
-			if (analogY == 0 && abs(analogX) > dead_Zone)
-			{
-				leftSpeed = analogX;
-				rightSpeed = -analogX;
-			}
-			else if (analogX >= dead_Zone && analogY > dead_Zone)
-			{
-				leftSpeed = analogY;
-				rightSpeed = analogY - analogX;
-			}
-			else if (analogX < -dead_Zone && analogY > dead_Zone)
-			{
-				leftSpeed = analogY + analogX;
-				rightSpeed = analogY;
-			}
-			else if (analogX >= dead_Zone && analogY < -dead_Zone) {
-				leftSpeed = analogY;
-				rightSpeed = analogY + analogX;
-			}
-			else if (analogX < -dead_Zone && analogY < -dead_Zone) {
-				leftSpeed = analogY - analogX;
-				rightSpeed = analogY;
-			}
-			else if (analogX == 0 && abs(analogY) > dead_Zone) {
-				leftSpeed = analogY;
-				rightSpeed = analogY;
-			}
+			leftSpeed = analogY;
+			rightSpeed = analogY - analogX;
+		}
+		else if (analogX < -dead_Zone && analogY > dead_Zone)
+		{
+			leftSpeed = analogY + analogX;
+			rightSpeed = analogY;
+		}
+		else if (analogX >= dead_Zone && analogY < -dead_Zone)
+		{
+			leftSpeed = analogY;
+			rightSpeed = analogY + analogX;
+		}
+		else if (analogX < -dead_Zone && analogY < -dead_Zone)
+		{
+			leftSpeed = analogY - analogX;
+			rightSpeed = analogY;
+		}
+		else if (analogX == 0 && abs(analogY) > dead_Zone)
+		{
+			leftSpeed = analogY;
+			rightSpeed = analogY;
 		}
 
-		if (master.get_digital(DIGITAL_R1))
-		{
-			lift_Front.move_velocity(90); //pick a velocity for the lifting
-		}
-		else if (master.get_digital(DIGITAL_R2))
-		{
-			lift_Front.move_velocity(-90);
-		}
-		else
-		{
-			lift_Front.move_velocity(0);
-		}
-
-		if (master.get_digital(DIGITAL_L1))
-		{
-			lift_Back.move_velocity(90); //pick a velocity for the lifting
-		}
-		else if (master.get_digital(DIGITAL_L2))
-		{
-			lift_Back.move_velocity(-90);
-		}
-		else
-		{
-			lift_Back.move_velocity(0);
-		}
-
-		if (master.get_digital_new_press(DIGITAL_B) && conveyor_up == false) {
-			conveyor_down = false;
-			conveyor_up = true;
-			conveyor_Belt.move_velocity(75);
-		}
-		else if (master.get_digital_new_press(DIGITAL_X) && conveyor_down == false) {
-			conveyor_down = true;
-			conveyor_up = false;
-			conveyor_Belt.move_velocity(-75);
-		}
-		if (master.get_digital_new_press(DIGITAL_Y)) {
-			conveyor_down = false;
-			conveyor_up = false;
-			conveyor_Belt.move_velocity(0);
-		}
-
-		left_back = leftSpeed * 1.574;
-		right_back = rightSpeed * 1.574;
-		left_front.move(leftSpeed * 1.574);
-		right_front.move(rightSpeed * 1.574);
-		middle_motor.move(((leftSpeed + rightSpeed) / 2) * 1.574);
-		pros::delay(10);
+	if (master.get_digital(DIGITAL_R1))
+	{
+		lift_Front.move_velocity(90); //pick a velocity for the lifting
 	}
+	else if (master.get_digital(DIGITAL_R2))
+	{
+		lift_Front.move_velocity(-90);
+	}
+	else
+	{
+		lift_Front.move_velocity(0);
+	}
+
+	if (master.get_digital(DIGITAL_L1))
+	{
+		lift_Back.move_velocity(90); //pick a velocity for the lifting
+	}
+	else if (master.get_digital(DIGITAL_L2))
+	{
+		lift_Back.move_velocity(-90);
+	}
+	else
+	{
+		lift_Back.move_velocity(0);
+	}
+
+	left_back = leftSpeed * 1.574;
+	right_back = rightSpeed * 1.574;
+	left_front.move(leftSpeed * 1.574);
+	right_front.move(rightSpeed * 1.574);
+	middle_left.move(leftSpeed * 1.574);
+	middle_right.move(rightSpeed * 1.574);
+	pros::delay(10);
+}
 }
