@@ -133,7 +133,7 @@ void opcontrol()
 	pros::Motor left_back(LeftMotor2);
 	pros::Motor right_back(RightMotor2);
 	pros::Motor left_front(LeftMotor1);
-	pros::Motor right_front(RightMotor1);
+	pros::Motor right_front(RightMotor1, true);
 	pros::Motor middle_right(RightMiddle);
 	pros::Motor middle_left(LeftMiddle);
 	pros::Motor lift_Front(frontLift, MOTOR_GEARSET_36, true); // Pick correct gearset (36 is red)
