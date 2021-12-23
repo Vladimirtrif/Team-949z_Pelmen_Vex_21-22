@@ -16,7 +16,7 @@ DEPFLAGS = -MT $$@ -MMD -MP -MF $(DEPDIR)/$$*.Td
 MAKEDEPFOLDER = -$(VV)mkdir -p $(DEPDIR)/$$(dir $$(patsubst $(BINDIR)/%, %, $(ROOT)/$$@))
 RENAMEDEPENDENCYFILE = -$(VV)mv -f $(DEPDIR)/$$*.Td $$(patsubst $(SRCDIR)/%, $(DEPDIR)/%.d, $(ROOT)/$$<) && touch $$@
 
-LIBRARIES+=$(wildcard $(FWDIR)/*.a)
+LIBRARIES+=$(FWDIR)/libc.a $(FWDIR)/libm.a $(FWDIR)/libpros.a
 # Cannot include newlib and libc because not all of the req'd stubs are implemented
 EXCLUDE_COLD_LIBRARIES+=$(FWDIR)/libc.a $(FWDIR)/libm.a
 COLD_LIBRARIES=$(filter-out $(EXCLUDE_COLD_LIBRARIES), $(LIBRARIES))
@@ -147,7 +147,7 @@ GETALLOBJ=$(sort $(call ASMOBJ,$1) $(call COBJ,$1) $(call CXXOBJ,$1))
 
 ARCHIVE_TEXT_LIST=$(subst $(SPACE),$(COMMA),$(notdir $(basename $(LIBRARIES))))
 
-LDTIMEOBJ:=$(BINDIR)/_pros_ld_timestamp.o
+#LDTIMEOBJ:=$(BINDIR)/_pros_ld_timestamp.o
 
 MONOLITH_BIN:=$(BINDIR)/monolith.bin
 MONOLITH_ELF:=$(basename $(MONOLITH_BIN)).elf
@@ -217,7 +217,7 @@ $(MONOLITH_BIN): $(MONOLITH_ELF) $(BINDIR)
 
 $(MONOLITH_ELF): $(ELF_DEPS) $(LIBRARIES)
 	$(call _pros_ld_timestamp)
-	$(call test_output_2,Linking project with $(ARCHIVE_TEXT_LIST) ,$(LD) $(LDFLAGS) $(ELF_DEPS) $(LDTIMEOBJ) $(call wlprefix,-T$(FWDIR)/v5.ld $(LNK_FLAGS)) -o $@,$(OK_STRING))
+	$(call test_output_2,Linking project with $(ARCHIVE_TEXT_LIST) ,$(LD) $(LDFLAGS) $(ELF_DEPS) $(call wlprefix,-T$(FWDIR)/v5.ld $(LNK_FLAGS)) -o $@,$(OK_STRING))
 	@echo Section sizes:
 	-$(VV)$(SIZETOOL) $(SIZEFLAGS) $@ $(SIZES_SED) $(SIZES_NUMFMT)
 
@@ -235,8 +235,7 @@ $(HOT_BIN): $(HOT_ELF) $(COLD_BIN)
 	$(call test_output_2,Creating $@ for $(DEVICE) ,$(OBJCOPY) $< -O binary $@,$(DONE_STRING))
 
 $(HOT_ELF): $(COLD_ELF) $(ELF_DEPS)
-	$(call _pros_ld_timestamp)
-	$(call test_output_2,Linking hot project with $(COLD_ELF) and $(ARCHIVE_TEXT_LIST) ,$(LD) -nostartfiles $(LDFLAGS) $(call wlprefix,-R $<) $(filter-out $<,$^) $(LDTIMEOBJ) $(LIBRARIES) $(call wlprefix,-T$(FWDIR)/v5-hot.ld $(LNK_FLAGS) -o $@),$(OK_STRING))
+	$(call test_output_2,Linking hot project with $(COLD_ELF) and $(ARCHIVE_TEXT_LIST) ,$(LD) -nostartfiles $(LDFLAGS) $(call wlprefix,-R $<) $(filter-out $<,$^) $(LIBRARIES) $(call wlprefix,-T$(FWDIR)/v5-hot.ld $(LNK_FLAGS) -o $@),$(OK_STRING))
 	@printf "%s\n" "Section sizes:"
 	-$(VV)$(SIZETOOL) $(SIZEFLAGS) $@ $(SIZES_SED) $(SIZES_NUMFMT)
 
@@ -272,7 +271,7 @@ $(VV)mkdir -p $(dir $(LDTIMEOBJ))
 @# Pipe a line of code defining _PROS_COMPILE_TOOLSTAMP and _PROS_COMPILE_DIRECTORY into GCC,
 @# which allows compilation from stdin. We define _PROS_COMPILE_DIRECTORY using a command line-defined macro
 @# which is the pwd | tail bit, which will truncate the path to the last 23 characters
-$(call test_output_2,Adding timestamp ,echo 'char const * const _PROS_COMPILE_TIMESTAMP = __DATE__ " " __TIME__; char const * const _PROS_COMPILE_DIRECTORY = "$(shell pwd | tail -c 23)";' | $(CC) -c -x c $(CFLAGS) $(EXTRA_CFLAGS) -o $(LDTIMEOBJ) -,$(OK_STRING))
+$(call test_output_2,Adding timestamp ,echo 'char const * const _PROS_COMPILE_TIMESTAMP = __DATE__ " " __TIME__; char const * const _PROS_COMPILE_DIRECTORY = "$(shell pwd | tail -c 23)";' | $(CC) -c -x c $(CFLAGS) $(EXTRA_CFLAGS) -o $(LDTIMEOBJ2) -,$(OK_STRING))
 endef
 
 # these rules are for build-compile-commands, which just print out sysroot information

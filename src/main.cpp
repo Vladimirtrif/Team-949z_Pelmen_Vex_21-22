@@ -1,12 +1,23 @@
 #include "main.h"
 
+/*
+ * Presence of these two variables here replaces _pros_ld_timestamp step in common.mk.
+ * THis way we get equivalent behavior without extra .c file to compile, and this faster build.
+ * Pros uses value from _PROS_COMPILE_TIMESTAMP to show time on cortex / remote (I think).
+ * I'm not sure how _PROS_COMPILE_DIRECTORY is used, but it's not full path (only first 23 characters)
+ * and not clear if it matters at all (likely also shows somewhere on cortex, which has no usage).
+ * If both of these variables are not present, final binary output becomes larger. Not sure why.
+ */
+extern "C" char const * const _PROS_COMPILE_TIMESTAMP = __DATE__ " " __TIME__;
+extern "C" char const * const _PROS_COMPILE_DIRECTORY = "";
+
 /**
  * A callback function for LLEMU's center button.
  *
  * When this callback is fired, it will toggle line 2 of the LCD text between
  * "I was pressed!" and nothing.
  */
-
+/*
 void on_center_button()
 {
 	static bool pressed = false;
@@ -20,7 +31,7 @@ void on_center_button()
 		pros::lcd::clear_line(2);
 	}
 }
-
+*/
 /**
  * Runs initialization code. This occurs as soon as the program is started.
  *
@@ -29,10 +40,12 @@ void on_center_button()
  */
 void initialize()
 {
+	/*
 	pros::lcd::initialize();
 	pros::lcd::set_text(1, "Hello PROS User!");
 
 	pros::lcd::register_btn1_cb(on_center_button);
+	*/
 }
 
 /**
@@ -146,10 +159,11 @@ void opcontrol()
 
 	while (true)
 	{
-
+		/*
 		pros::lcd::print(0, "%d %d %d", (pros::lcd::read_buttons() & LCD_BTN_LEFT) >> 2,
 						 (pros::lcd::read_buttons() & LCD_BTN_CENTER) >> 1,
 						 (pros::lcd::read_buttons() & LCD_BTN_RIGHT) >> 0);
+		*/
 		int leftSpeed = 0;
 		int rightSpeed = 0;
 		int analogY = master.get_analog(ANALOG_LEFT_Y);
