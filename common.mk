@@ -216,7 +216,7 @@ $(MONOLITH_BIN): $(MONOLITH_ELF) $(BINDIR)
 	$(call test_output_2,Creating $@ for $(DEVICE) ,$(OBJCOPY) $< -O binary -R .hot_init $@,$(DONE_STRING))
 
 $(MONOLITH_ELF): $(ELF_DEPS) $(LIBRARIES)
-	$(call _pros_ld_timestamp)
+#	$(call _pros_ld_timestamp)
 	$(call test_output_2,Linking project with $(ARCHIVE_TEXT_LIST) ,$(LD) $(LDFLAGS) $(ELF_DEPS) $(LDTIMEOBJ) $(call wlprefix,-T$(FWDIR)/v5.ld $(LNK_FLAGS)) -o $@,$(OK_STRING))
 	@echo Section sizes:
 	-$(VV)$(SIZETOOL) $(SIZEFLAGS) $@ $(SIZES_SED) $(SIZES_NUMFMT)
