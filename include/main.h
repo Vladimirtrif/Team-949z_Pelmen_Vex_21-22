@@ -78,7 +78,7 @@ void opcontrol(void);
 #define RightMiddle 5
 #define frontLift 7
 #define backLift 6
-
+#define PneumaticPort 99 // need to assign actual port
 
 
 
