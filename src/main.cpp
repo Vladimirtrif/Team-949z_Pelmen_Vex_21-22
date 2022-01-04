@@ -1,4 +1,5 @@
 #include "main.h"
+#include "pros/adi.h"
 
 /**
  * A callback function for LLEMU's center button.
@@ -138,6 +139,12 @@ void opcontrol()
 	pros::Motor middle_left(LeftMiddle, true);
 	pros::Motor lift_Front(frontLift, MOTOR_GEARSET_36, true); // Pick correct gearset (36 is red)
 	pros::Motor lift_Back(backLift, MOTOR_GEARSET_36);
+
+	pros::Motor conveyor_motor(PneumaticPort);
+	int ConveyorDirection = 0;
+	bool ConveyorOn = false;
+	int ConveyorSpeed = 9999;
+
 	lift_Front.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 	lift_Back.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 	bool conveyor_up = false;
@@ -185,6 +192,29 @@ void opcontrol()
 			leftSpeed = analogY;
 			rightSpeed = analogY;
 		}
+
+		if (master.get_digital(DIGITAL_A))
+		{
+			pros::c::adi_digital_write(PneumaticPort, HIGH);
+			ConveyorDirection = 1;
+			ConveyorOn = true;
+		}
+
+		if (master.get_digital(DIGITAL_B))
+		{
+			pros::c::adi_digital_write(PneumaticPort, HIGH);
+			ConveyorDirection = -1;
+			ConveyorOn = true;
+		}
+
+		if (master.get_digital(DIGITAL_X))
+		{
+			pros::c::adi_digital_write(PneumaticPort, LOW);
+			ConveyorDirection = 0;
+			ConveyorOn = false;
+		}
+
+		conveyor_motor.move(ConveyorSpeed * ConveyorDirection);
 
 	if (master.get_digital(DIGITAL_R1))
 	{
