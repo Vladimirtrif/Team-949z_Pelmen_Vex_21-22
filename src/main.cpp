@@ -69,13 +69,15 @@ void competition_initialize() {}
 class Autonomous
 {
 	//setting all the ports and motors
-	pros::Motor left_back{LeftMotor2};
-	pros::Motor right_back{RightMotor2, true};
-	pros::Motor left_front{LeftMotor1};
-	pros::Motor right_front{RightMotor1, true};
-	pros::Motor middle_right{RightMiddle};
-	pros::Motor middle_left{LeftMiddle, true};
+	pros::Motor left_back{LeftBackPort};
+	pros::Motor left_middle{LeftMiddlePort, true};
+	pros::Motor left_front{LeftFrontPort};
+	pros::Motor right_back{RightBackPort, true};
+	pros::Motor right_middle{RightMiddlePort};
+	pros::Motor right_front{RightFrontPort, true};
+
 	pros::Controller master{CONTROLLER_MASTER};
+
 	pros::Motor lift_Front{frontLift, MOTOR_GEARSET_36, true}; // Pick correct gearset (36 is red)
 	pros::Motor lift_Back{backLift, MOTOR_GEARSET_36};
 
@@ -85,8 +87,8 @@ class Autonomous
 		right_front.move_relative(ticks, speed);
 		left_back.move_relative(ticks, speed);
 		right_back.move_relative(ticks, speed);
-		middle_left.move_relative(ticks, speed);
-		middle_right.move_relative(ticks, speed);
+		left_middle.move_relative(ticks, speed);
+		right_middle.move_relative(ticks, speed);
 	}
 
 public:
@@ -143,16 +145,21 @@ void autonomous()
 void opcontrol()
 {
 	pros::Controller master(CONTROLLER_MASTER);
-	pros::Motor left_back(LeftMotor2);
-	pros::Motor right_back(RightMotor2, true);
-	pros::Motor left_front(LeftMotor1);
-	pros::Motor right_front(RightMotor1, true);
-	pros::Motor middle_right(RightMiddle);
-	pros::Motor middle_left(LeftMiddle, true);
+
+	pros::Motor left_back(LeftBackPort);
+	pros::Motor left_middle(LeftMiddlePort, true);
+	pros::Motor left_front(LeftFrontPort);
+
+	pros::Motor right_back(RightBackPort, true);
+	pros::Motor right_middle(RightMiddlePort);
+	pros::Motor right_front(RightFrontPort, true);
+
 	pros::Motor lift_Front(frontLift, MOTOR_GEARSET_36, true); // Pick correct gearset (36 is red)
 	pros::Motor lift_Back(backLift, MOTOR_GEARSET_36);
+
 	lift_Front.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 	lift_Back.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+
 	bool conveyor_up = false;
 	bool conveyor_down = false;
 	int dead_Zone = 10; //the deadzone for the joysticks
@@ -200,38 +207,39 @@ void opcontrol()
 			rightSpeed = analogY;
 		}
 
-	if (master.get_digital(DIGITAL_R1))
-	{
-		lift_Front.move_velocity(90); //pick a velocity for the lifting
-	}
-	else if (master.get_digital(DIGITAL_R2))
-	{
-		lift_Front.move_velocity(-90);
-	}
-	else
-	{
-		lift_Front.move_velocity(0);
-	}
+		if (master.get_digital(DIGITAL_R1))
+		{
+			lift_Front.move_velocity(90); //pick a velocity for the lifting
+		}
+		else if (master.get_digital(DIGITAL_R2))
+		{
+			lift_Front.move_velocity(-90);
+		}
+		else
+		{
+			lift_Front.move_velocity(0);
+		}
 
-	if (master.get_digital(DIGITAL_L1))
-	{
-		lift_Back.move_velocity(90); //pick a velocity for the lifting
-	}
-	else if (master.get_digital(DIGITAL_L2))
-	{
-		lift_Back.move_velocity(-90);
-	}
-	else
-	{
-		lift_Back.move_velocity(0);
-	}
+		if (master.get_digital(DIGITAL_L1))
+		{
+			lift_Back.move_velocity(90); //pick a velocity for the lifting
+		}
+		else if (master.get_digital(DIGITAL_L2))
+		{
+			lift_Back.move_velocity(-90);
+		}
+		else
+		{
+			lift_Back.move_velocity(0);
+		}
 
-	left_back = leftSpeed * 1.574;
-	right_back = rightSpeed * 1.574;
-	left_front.move(leftSpeed * 1.574);
-	right_front.move(rightSpeed * 1.574);
-	middle_left.move(leftSpeed * 1.574);
-	middle_right.move(rightSpeed * 1.574);
-	pros::delay(10);
-}
+		left_back.move(leftSpeed * 1.574);
+		right_back.move(rightSpeed * 1.574);
+		left_front.move(leftSpeed * 1.574);
+		right_front.move(rightSpeed * 1.574);
+		left_middle.move(leftSpeed * 1.574);
+		right_middle.move(rightSpeed * 1.574);
+
+		pros::delay(10);
+	}
 }

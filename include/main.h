@@ -70,12 +70,12 @@ void opcontrol(void);
 }
 #endif
 
-#define LeftMotor1 9
-#define RightMotor1 2
-#define LeftMotor2 11
-#define RightMotor2 20
-#define LeftMiddle 1
-#define RightMiddle 5
+#define LeftFrontPort 9
+#define RightFrontPort 2
+#define LeftBackPort 11
+#define RightBackPort 20
+#define LeftMiddlePort 1
+#define RightMiddlePort 5
 #define frontLift 7
 #define backLift 6
 
