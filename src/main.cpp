@@ -155,11 +155,11 @@ void opcontrol()
 {
 	pros::Controller master(CONTROLLER_MASTER);
 
-	pros::Motor left_front(LeftFrontPort);
+	pros::Motor left_front(LeftFrontPort); //correct direction
 	pros::Motor left_middle(LeftMiddlePort, true);
 	pros::Motor left_back(LeftBackPort);
 
-	pros::Motor right_front(RightFrontPort, true);
+	pros::Motor right_front(RightFrontPort, true); //correct direction
 	pros::Motor right_middle(RightMiddlePort);
 	pros::Motor right_back(RightBackPort, true);
 
