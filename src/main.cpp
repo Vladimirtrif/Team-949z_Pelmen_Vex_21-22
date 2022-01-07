@@ -155,13 +155,13 @@ void opcontrol()
 {
 	pros::Controller master(CONTROLLER_MASTER);
 
-	pros::Motor left_back(LeftBackPort);
-	pros::Motor left_middle(LeftMiddlePort, true);
 	pros::Motor left_front(LeftFrontPort);
+	pros::Motor left_middle(LeftMiddlePort, true);
+	pros::Motor left_back(LeftBackPort);
 
-	pros::Motor right_back(RightBackPort, true);
-	pros::Motor right_middle(RightMiddlePort);
 	pros::Motor right_front(RightFrontPort, true);
+	pros::Motor right_middle(RightMiddlePort);
+	pros::Motor right_back(RightBackPort, true);
 
 	pros::Motor lift_Front(frontLift, MOTOR_GEARSET_36, true); // Pick correct gearset (36 is red)
 	pros::Motor lift_Back(backLift, MOTOR_GEARSET_36, true);
@@ -242,12 +242,13 @@ void opcontrol()
 			lift_Back.move_velocity(0);
 		}
 
-		left_back.move(leftSpeed * 1.574);
-		right_back.move(rightSpeed * 1.574);
 		left_front.move(leftSpeed * 1.574);
-		right_front.move(rightSpeed * 1.574);
 		left_middle.move(leftSpeed * 1.574);
+		left_back.move(leftSpeed * 1.574);
+
+		right_front.move(rightSpeed * 1.574);
 		right_middle.move(rightSpeed * 1.574);
+		right_back.move(rightSpeed * 1.574);
 
 		pros::delay(10);
 	}
