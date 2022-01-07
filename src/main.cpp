@@ -68,18 +68,18 @@ void competition_initialize() {}
 
 class Autonomous
 {
-	//setting all the ports and motors
+	pros::Controller master{CONTROLLER_MASTER};
+
 	pros::Motor left_back{LeftBackPort};
 	pros::Motor left_middle{LeftMiddlePort, true};
 	pros::Motor left_front{LeftFrontPort};
+
 	pros::Motor right_back{RightBackPort, true};
 	pros::Motor right_middle{RightMiddlePort};
 	pros::Motor right_front{RightFrontPort, true};
 
-	pros::Controller master{CONTROLLER_MASTER};
-
 	pros::Motor lift_Front{frontLift, MOTOR_GEARSET_36, true}; // Pick correct gearset (36 is red)
-	pros::Motor lift_Back{backLift, MOTOR_GEARSET_36};
+	pros::Motor lift_Back{backLift, MOTOR_GEARSET_36, true};
 
 	void Move(int ticks, int speed)
 	{
@@ -89,6 +89,15 @@ class Autonomous
 		right_back.move_relative(ticks, speed);
 		left_middle.move_relative(ticks, speed);
 		right_middle.move_relative(ticks, speed);
+	}
+
+	void Turn(int degrees) { //code tp turn, find value to plug in instead or 1 for amount of ticks it takes to turn 360 degrees, positive is right turn, negative degrees is left turn
+		left_front.move_relative((degrees/360) * 1, 200);
+		right_front.move_relative((degrees/360) * -1, 200);
+		left_back.move_relative((degrees/360) * 1, 200);
+		right_back.move_relative((degrees/360) * -1, 200);
+		left_middle.move_relative((degrees/360) * 1, 200);
+		right_middle.move_relative((degrees/360) * -1, 200);
 	}
 
 public:
@@ -155,7 +164,7 @@ void opcontrol()
 	pros::Motor right_front(RightFrontPort, true);
 
 	pros::Motor lift_Front(frontLift, MOTOR_GEARSET_36, true); // Pick correct gearset (36 is red)
-	pros::Motor lift_Back(backLift, MOTOR_GEARSET_36);
+	pros::Motor lift_Back(backLift, MOTOR_GEARSET_36, true);
 
 	lift_Front.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 	lift_Back.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);

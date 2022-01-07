@@ -70,14 +70,16 @@ void opcontrol(void);
 }
 #endif
 
-#define LeftFrontPort 9
-#define RightFrontPort 2
+#define LeftFrontPort 6
+#define LeftMiddlePort 7
 #define LeftBackPort 11
+
+#define RightFrontPort 19
+#define RightMiddlePort 16
 #define RightBackPort 20
-#define LeftMiddlePort 1
-#define RightMiddlePort 5
-#define frontLift 7
-#define backLift 6
+
+#define frontLift 8
+#define backLift 18
 
 
 
