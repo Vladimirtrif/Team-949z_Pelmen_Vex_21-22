@@ -49,11 +49,6 @@ void initialize()
 	*/
 }
 
-void initializeIO() {
-   pros::c::adi_pin_mode(PneumaticsPort, OUTPUT); // configure digital port 1 as an output
-  pros::c::adi_digital_write(PneumaticsPort, 1); // write LOW to port 1 (solenoid may be extended or not, depending on wiring)
-}
-
 /**
  * Runs while the robot is in the disabled state of Field Management System or
  * the VEX Competition Switch, following either autonomous or opcontrol. When
@@ -175,8 +170,9 @@ void opcontrol()
 	lift_Front.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 	lift_Back.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 
-	bool conveyor_up = false;
-	bool conveyor_down = false;
+	pros::c::adi_pin_mode(PneumaticsPort, OUTPUT);
+	pros::c::adi_digital_write(PneumaticsPort, LOW); // write LOW to port 1 (solenoid may be extended or not, depending on wiring)
+
 	bool ConveyorOn = false;
 	int dead_Zone = 10; //the deadzone for the joysticks
 
@@ -244,7 +240,7 @@ void opcontrol()
 	{
 		lift_Back.move_velocity(-90);
 	}
-	else
+	else if (ConveyorOn == false)
 	{
 		lift_Back.move_velocity(0);
 	}
@@ -253,7 +249,9 @@ void opcontrol()
 	if (master.get_digital(DIGITAL_B))
 	{
 		lift_Back.move_velocity(0);
-		pros::c::adi_digital_write(PneumaticsPort, 1);
+		ConveyorOn = true;
+		pros::c::adi_digital_write(PneumaticsPort, HIGH);
+		pros::delay(250);
 		lift_Back.move_velocity(100);
 	}
 
@@ -261,15 +259,17 @@ void opcontrol()
 	if (master.get_digital(DIGITAL_X))
 	{
 		lift_Back.move_velocity(0);
-		pros::c::adi_digital_write(PneumaticsPort, 1);
+		ConveyorOn = true;
+		pros::c::adi_digital_write(PneumaticsPort, HIGH);
+		pros::delay(250);
 		lift_Back.move_velocity(-100);
 	}
-
 
 	if (master.get_digital(DIGITAL_Y))
 	{
 		lift_Back.move_velocity(0);
-		pros::c::adi_digital_write(PneumaticsPort, 0);
+		pros::c::adi_digital_write(PneumaticsPort, LOW);
+		pros::delay(250);
 		ConveyorOn = false;
 	}
 		left_front.move(leftSpeed * 1.574);
