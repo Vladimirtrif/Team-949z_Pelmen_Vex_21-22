@@ -105,19 +105,20 @@ public:
 	void run()
 	{
 		lift_Front.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+		pros::c::adi_digital_write(PneumaticsPort, LOW);
 
 		//moving forward to goal
-		Move(4100, 200);
+		Move(3750, 200);
 
 		lift_Front.move_relative(-2900, 100);
 		//lift_Back.move_relative(5000, 90);
 
-		pros::delay(1450);
+		pros::delay(1325);
 
 		lift_Front.move_relative(2000, 100);
-		pros::delay(350);
+		pros::delay(300);
 
-		Move(-3000, 200);
+		Move(-2500, 200);
 	}
 };
 
@@ -252,7 +253,7 @@ void opcontrol()
 		ConveyorOn = true;
 		pros::c::adi_digital_write(PneumaticsPort, HIGH);
 		pros::delay(250);
-		lift_Back.move_velocity(100);
+		lift_Back.move_velocity(-100);
 	}
 
 
@@ -262,7 +263,7 @@ void opcontrol()
 		ConveyorOn = true;
 		pros::c::adi_digital_write(PneumaticsPort, HIGH);
 		pros::delay(250);
-		lift_Back.move_velocity(-100);
+		lift_Back.move_velocity(100);
 	}
 
 	if (master.get_digital(DIGITAL_Y))
