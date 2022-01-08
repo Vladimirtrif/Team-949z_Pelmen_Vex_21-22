@@ -9,8 +9,8 @@
  * and not clear if it matters at all (likely also shows somewhere on cortex, which has no usage).
  * If both of these variables are not present, final binary output becomes larger. Not sure why.
  */
-extern "C" char const * const _PROS_COMPILE_TIMESTAMP = __DATE__ " " __TIME__;
-extern "C" char const * const _PROS_COMPILE_DIRECTORY = "";
+extern "C" char const *const _PROS_COMPILE_TIMESTAMP = __DATE__ " " __TIME__;
+extern "C" char const *const _PROS_COMPILE_DIRECTORY = "";
 
 /**
  * A callback function for LLEMU's center button.
@@ -71,13 +71,13 @@ class Autonomous
 {
 	pros::Controller master{CONTROLLER_MASTER};
 
-	pros::Motor left_back{LeftBackPort};
-	pros::Motor left_middle{LeftMiddlePort, true};
 	pros::Motor left_front{LeftFrontPort};
+	pros::Motor left_middle{LeftMiddlePort, true};
+	pros::Motor left_back{LeftBackPort};
 
-	pros::Motor right_back{RightBackPort};
-	pros::Motor right_middle{RightMiddlePort};
 	pros::Motor right_front{RightFrontPort, true};
+	pros::Motor right_middle{RightMiddlePort};
+	pros::Motor right_back{RightBackPort};
 
 	pros::Motor lift_Front{frontLift, MOTOR_GEARSET_36, true}; // Pick correct gearset (36 is red)
 	pros::Motor lift_Back{backLift, MOTOR_GEARSET_36, true};
@@ -85,33 +85,34 @@ class Autonomous
 	void Move(int ticks, int speed)
 	{
 		left_front.move_relative(ticks, speed);
-		right_front.move_relative(ticks, speed);
-		left_back.move_relative(ticks, speed);
-		right_back.move_relative(ticks, speed);
 		left_middle.move_relative(ticks, speed);
+		left_back.move_relative(ticks, speed);
+
+		right_front.move_relative(ticks, speed);
 		right_middle.move_relative(ticks, speed);
+		right_back.move_relative(-ticks, speed);
 	}
 
-	void Turn(int degrees) { //code tp turn, find value to plug in instead or 1 for amount of ticks it takes to turn 360 degrees, positive is right turn, negative degrees is left turn
-		left_front.move_relative((degrees/360) * 1, 200);
-		right_front.move_relative((degrees/360) * -1, 200);
-		left_back.move_relative((degrees/360) * 1, 200);
-		right_back.move_relative((degrees/360) * -1, 200);
-		left_middle.move_relative((degrees/360) * 1, 200);
-		right_middle.move_relative((degrees/360) * -1, 200);
+	void Turn(int degrees)
+	{ //code tp turn, find value to plug in instead or 1 for amount of ticks it takes to turn 360 degrees, positive is right turn, negative degrees is left turn
+		left_front.move_relative((degrees / 360) * 1, 200);
+		left_middle.move_relative((degrees / 360) * 1, 200);
+		left_back.move_relative((degrees / 360) * 1, 200);
+
+		right_front.move_relative((degrees / 360) * -1, 200);
+		right_middle.move_relative((degrees / 360) * -1, 200);
+		right_back.move_relative((degrees / 360) * 1, 200);
 	}
 
 public:
 	void run()
 	{
 		lift_Front.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-		pros::c::adi_digital_write(PneumaticsPort, LOW);
 
 		//moving forward to goal
 		Move(3750, 200);
 
 		lift_Front.move_relative(-2900, 100);
-		//lift_Back.move_relative(5000, 90);
 
 		pros::delay(1325);
 
@@ -158,7 +159,7 @@ void opcontrol()
 	pros::Controller master(CONTROLLER_MASTER);
 
 	pros::Motor left_front(LeftFrontPort);
-	pros::Motor left_middle(LeftMiddlePort, true); 
+	pros::Motor left_middle(LeftMiddlePort, true);
 	pros::Motor left_back(LeftBackPort);
 
 	pros::Motor right_front(RightFrontPort, true);
@@ -234,45 +235,43 @@ void opcontrol()
 		}
 
 		if (master.get_digital(DIGITAL_L1) && ConveyorOn == false)
-	{
-		lift_Back.move_velocity(90); //pick a velocity for the lifting
-	}
-	else if (master.get_digital(DIGITAL_L2) && ConveyorOn == false)
-	{
-		lift_Back.move_velocity(-90);
-	}
-	else if (ConveyorOn == false)
-	{
-		lift_Back.move_velocity(0);
-	}
+		{
+			lift_Back.move_velocity(90); //pick a velocity for the lifting
+		}
+		else if (master.get_digital(DIGITAL_L2) && ConveyorOn == false)
+		{
+			lift_Back.move_velocity(-90);
+		}
+		else if (ConveyorOn == false)
+		{
+			lift_Back.move_velocity(0);
+		}
 
+		if (master.get_digital(DIGITAL_B))
+		{
+			lift_Back.move_velocity(0);
+			ConveyorOn = true;
+			pros::c::adi_digital_write(PneumaticsPort, HIGH);
+			pros::delay(250);
+			lift_Back.move_velocity(-100);
+		}
 
-	if (master.get_digital(DIGITAL_B))
-	{
-		lift_Back.move_velocity(0);
-		ConveyorOn = true;
-		pros::c::adi_digital_write(PneumaticsPort, HIGH);
-		pros::delay(250);
-		lift_Back.move_velocity(-100);
-	}
+		if (master.get_digital(DIGITAL_X))
+		{
+			lift_Back.move_velocity(0);
+			ConveyorOn = true;
+			pros::c::adi_digital_write(PneumaticsPort, HIGH);
+			pros::delay(250);
+			lift_Back.move_velocity(100);
+		}
 
-
-	if (master.get_digital(DIGITAL_X))
-	{
-		lift_Back.move_velocity(0);
-		ConveyorOn = true;
-		pros::c::adi_digital_write(PneumaticsPort, HIGH);
-		pros::delay(250);
-		lift_Back.move_velocity(100);
-	}
-
-	if (master.get_digital(DIGITAL_Y))
-	{
-		lift_Back.move_velocity(0);
-		pros::c::adi_digital_write(PneumaticsPort, LOW);
-		pros::delay(250);
-		ConveyorOn = false;
-	}
+		if (master.get_digital(DIGITAL_Y))
+		{
+			lift_Back.move_velocity(0);
+			pros::c::adi_digital_write(PneumaticsPort, LOW);
+			pros::delay(250);
+			ConveyorOn = false;
+		}
 		left_front.move(leftSpeed * 1.574);
 		left_middle.move(leftSpeed * 1.574);
 		left_back.move(leftSpeed * 1.574);
