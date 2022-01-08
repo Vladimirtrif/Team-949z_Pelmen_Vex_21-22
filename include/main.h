@@ -81,8 +81,7 @@ void opcontrol(void);
 #define frontLift 8
 #define backLift 18
 
-
-
+#define PneumaticsPort 'A'
 
 #ifdef __cplusplus
 /**

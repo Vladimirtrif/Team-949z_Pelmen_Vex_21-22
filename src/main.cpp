@@ -1,5 +1,6 @@
 #include "main.h"
-
+#include "pros/adi.h"
+#include "pros/api_legacy.h"
 /*
  * Presence of these two variables here replaces _pros_ld_timestamp step in common.mk.
  * THis way we get equivalent behavior without extra .c file to compile, and this faster build.
@@ -46,6 +47,11 @@ void initialize()
 
 	pros::lcd::register_btn1_cb(on_center_button);
 	*/
+}
+
+void initializeIO() {
+   pros::c::adi_pin_mode(PneumaticsPort, OUTPUT); // configure digital port 1 as an output
+  pros::c::adi_digital_write(PneumaticsPort, 1); // write LOW to port 1 (solenoid may be extended or not, depending on wiring)
 }
 
 /**
@@ -247,7 +253,7 @@ void opcontrol()
 	if (master.get_digital(DIGITAL_B))
 	{
 		lift_Back.move_velocity(0);
-		digitalWrite(PneumaticPort, HIGH);
+		pros::c::adi_digital_write(PneumaticsPort, 1);
 		lift_Back.move_velocity(100);
 	}
 
@@ -255,7 +261,7 @@ void opcontrol()
 	if (master.get_digital(DIGITAL_X))
 	{
 		lift_Back.move_velocity(0);
-		digitalWrite(PneumaticPort, HIGH);
+		pros::c::adi_digital_write(PneumaticsPort, 1);
 		lift_Back.move_velocity(-100);
 	}
 
@@ -263,7 +269,7 @@ void opcontrol()
 	if (master.get_digital(DIGITAL_Y))
 	{
 		lift_Back.move_velocity(0);
-		digitalWrite(PneumaticPort, LOW);
+		pros::c::adi_digital_write(PneumaticsPort, 0);
 		ConveyorOn = false;
 	}
 		left_front.move(leftSpeed * 1.574);
