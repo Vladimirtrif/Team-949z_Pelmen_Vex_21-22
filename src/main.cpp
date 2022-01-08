@@ -171,6 +171,7 @@ void opcontrol()
 
 	bool conveyor_up = false;
 	bool conveyor_down = false;
+	bool ConveyorOn = false;
 	int dead_Zone = 10; //the deadzone for the joysticks
 
 	while (true)
@@ -229,19 +230,42 @@ void opcontrol()
 			lift_Front.move_velocity(0);
 		}
 
-		if (master.get_digital(DIGITAL_L1))
-		{
-			lift_Back.move_velocity(90); //pick a velocity for the lifting
-		}
-		else if (master.get_digital(DIGITAL_L2))
-		{
-			lift_Back.move_velocity(-90);
-		}
-		else
-		{
-			lift_Back.move_velocity(0);
-		}
+		if (master.get_digital(DIGITAL_L1) && ConveyorOn == false)
+	{
+		lift_Back.move_velocity(90); //pick a velocity for the lifting
+	}
+	else if (master.get_digital(DIGITAL_L2) && ConveyorOn == false)
+	{
+		lift_Back.move_velocity(-90);
+	}
+	else
+	{
+		lift_Back.move_velocity(0);
+	}
 
+
+	if (master.get_digital(DIGITAL_B))
+	{
+		lift_Back.move_velocity(0);
+		digitalWrite(PneumaticPort, HIGH);
+		lift_Back.move_velocity(100);
+	}
+
+
+	if (master.get_digital(DIGITAL_X))
+	{
+		lift_Back.move_velocity(0);
+		digitalWrite(PneumaticPort, HIGH);
+		lift_Back.move_velocity(-100);
+	}
+
+
+	if (master.get_digital(DIGITAL_Y))
+	{
+		lift_Back.move_velocity(0);
+		digitalWrite(PneumaticPort, LOW);
+		ConveyorOn = false;
+	}
 		left_front.move(leftSpeed * 1.574);
 		left_middle.move(leftSpeed * 1.574);
 		left_back.move(leftSpeed * 1.574);
