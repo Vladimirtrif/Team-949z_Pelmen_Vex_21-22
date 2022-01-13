@@ -110,14 +110,14 @@ public:
 		lift_Front.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 
 		//moving forward to goal
-		Move(2700, 200);
+		Move(3000, 200);
 
 		lift_Front.move_relative(-1800, 80);
 
-		pros::delay(1350);
+		pros::delay(1200);
 
 		lift_Front.move_relative(1000, 100);
-		pros::delay(400);
+		pros::delay(900);
 
 		Move(-2800, 200);
 	}
