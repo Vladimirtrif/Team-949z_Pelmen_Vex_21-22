@@ -110,7 +110,7 @@ public:
 		lift_Front.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 
 		//moving forward to goal
-		Move(2600, 200);
+		Move(2700, 200);
 
 		lift_Front.move_relative(-1800, 80);
 
@@ -119,7 +119,7 @@ public:
 		lift_Front.move_relative(1000, 100);
 		pros::delay(400);
 
-		Move(-2500, 200);
+		Move(-2800, 200);
 	}
 };
 
@@ -173,7 +173,7 @@ void opcontrol()
 	lift_Back.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 
 	pros::c::adi_pin_mode(PneumaticsPort, OUTPUT);
-	pros::c::adi_digital_write(PneumaticsPort, LOW); // write LOW to port 1 (solenoid may be extended or not, depending on wiring)
+	pros::c::adi_digital_write(PneumaticsPort, HIGH); // write LOW to port 1 (solenoid may be extended or not, depending on wiring)
 
 	bool ConveyorOn = false;
 	int dead_Zone = 10; //the deadzone for the joysticks
@@ -251,7 +251,7 @@ void opcontrol()
 		{
 			lift_Back.move_velocity(0);
 			ConveyorOn = true;
-			pros::c::adi_digital_write(PneumaticsPort, HIGH);
+			pros::c::adi_digital_write(PneumaticsPort, LOW);
 			pros::delay(250);
 			lift_Back.move_velocity(-100);
 		}
@@ -260,7 +260,7 @@ void opcontrol()
 		{
 			lift_Back.move_velocity(0);
 			ConveyorOn = true;
-			pros::c::adi_digital_write(PneumaticsPort, HIGH);
+			pros::c::adi_digital_write(PneumaticsPort, LOW);
 			pros::delay(250);
 			lift_Back.move_velocity(100);
 		}
@@ -268,7 +268,7 @@ void opcontrol()
 		if (master.get_digital(DIGITAL_Y))
 		{
 			lift_Back.move_velocity(0);
-			pros::c::adi_digital_write(PneumaticsPort, LOW);
+			pros::c::adi_digital_write(PneumaticsPort, HIGH);
 			pros::delay(250);
 			ConveyorOn = false;
 		}
