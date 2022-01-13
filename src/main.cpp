@@ -95,13 +95,13 @@ class Autonomous
 
 	void Turn(int degrees)
 	{ //code tp turn, find value to plug in instead or 1 for amount of ticks it takes to turn 360 degrees, positive is right turn, negative degrees is left turn
-		left_front.move_relative((degrees / 360) * 1, 200);
-		left_middle.move_relative((degrees / 360) * 1, 200);
-		left_back.move_relative((degrees / 360) * 1, 200);
+		left_front.move_relative((degrees / 360) * 3550, 200);
+		left_middle.move_relative((degrees / 360) * 3550, 200);
+		left_back.move_relative((degrees / 360) * 3550, 200);
 
-		right_front.move_relative((degrees / 360) * -1, 200);
-		right_middle.move_relative((degrees / 360) * -1, 200);
-		right_back.move_relative((degrees / 360) * 1, 200);
+		right_front.move_relative((degrees / 360) * -3550, 200);
+		right_middle.move_relative((degrees / 360) * -3550, 200);
+		right_back.move_relative((degrees / 360) * 3550, 200);
 	}
 
 public:
