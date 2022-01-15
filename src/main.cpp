@@ -69,6 +69,7 @@ void competition_initialize() {}
 
 class Autonomous
 {
+
 	pros::Controller master{CONTROLLER_MASTER};
 
 	pros::Motor left_front{LeftFrontPort};
@@ -93,33 +94,63 @@ class Autonomous
 		right_back.move_relative(-ticks, speed);
 	}
 
-	void Turn(int degrees)
+	void Turn(double degrees, int speed)
 	{ //code tp turn, find value to plug in instead or 1 for amount of ticks it takes to turn 360 degrees, positive is right turn, negative degrees is left turn
-		left_front.move_relative((degrees / 360) * 3550, 200);
-		left_middle.move_relative((degrees / 360) * 3550, 200);
-		left_back.move_relative((degrees / 360) * 3550, 200);
+		left_front.move_relative((degrees/360) * 3525, speed);
+		left_middle.move_relative((degrees/360) * 3525, speed);
+		left_back.move_relative((degrees/360) * 3525, speed);
 
-		right_front.move_relative((degrees / 360) * -3550, 200);
-		right_middle.move_relative((degrees / 360) * -3550, 200);
-		right_back.move_relative((degrees / 360) * 3550, 200);
+		right_front.move_relative((degrees/360) * -3525, speed);
+		right_middle.move_relative((degrees/360) * -3525, speed);
+		right_back.move_relative((degrees/360) * 3525, speed);
 	}
 
 public:
 	void run()
 	{
 		lift_Front.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+		pros::c::adi_pin_mode(PneumaticsPort, OUTPUT);
+		pros::c::adi_digital_write(PneumaticsPort, HIGH); // write LOW to port 1 (solenoid may be extended or not, depending on wiring)
 
 		//moving forward to goal
 		Move(3000, 200);
 
-		lift_Front.move_relative(-1800, 80);
-
+		lift_Front.move_relative(-1800, 100);
 		pros::delay(1200);
 
 		lift_Front.move_relative(1000, 100);
 		pros::delay(900);
 
-		Move(-2800, 200);
+		Move(-1700, 200);
+		pros::delay(750);
+
+		Turn(-90, 150);
+		pros::delay(1600);
+
+		Move(800, 150);
+		pros::delay(1100);
+
+		lift_Back.move_relative(-2000, 100);
+		pros::delay(1100);
+
+		Move(-1700, 150);
+		pros::delay(1800);
+
+		lift_Back.move_relative(1000, 100);
+		pros::delay(1500);
+
+		Turn(10, 150);
+		pros::delay(400);
+
+		Move(1800, 150);
+		pros::delay(1000);
+
+		pros::c::adi_digital_write(PneumaticsPort, LOW);
+		pros::delay(250);
+		lift_Back.move_velocity(-100);
+		pros::delay(250);
+
+		Move(3000,100);
 	}
 };
 
