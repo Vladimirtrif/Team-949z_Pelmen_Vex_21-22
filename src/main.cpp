@@ -113,7 +113,7 @@ public:
 		pros::c::adi_digital_write(PneumaticsPort, HIGH); // write LOW to port 1 (solenoid may be extended or not, depending on wiring)
 
 		//moving forward to goal
-		Move(3000, 200);
+		Move(2900, 200);
 
 		lift_Front.move_relative(-1800, 100);
 		pros::delay(1200);
