@@ -1,6 +1,9 @@
 #include "main.h"
 #include "pros/adi.h"
+#include "pros/adi.hpp"
 #include "pros/api_legacy.h"
+#include "pros/rtos.h"
+
 /*
  * Presence of these two variables here replaces _pros_ld_timestamp step in common.mk.
  * THis way we get equivalent behavior without extra .c file to compile, and this faster build.
@@ -82,6 +85,8 @@ class Autonomous
 	pros::Motor lift_Front{frontLift, MOTOR_GEARSET_36, true}; // Pick correct gearset (36 is red)
 	pros::Motor lift_Back{backLift, MOTOR_GEARSET_36, true};
 
+	pros::ADIAnalogIn m_sensor { 3 }; // port number, I think it can be a number or a letter, but not sure.
+
 	void Move(int ticks, int speed)
 	{
 		left_front.move_relative(ticks, speed);
@@ -117,7 +122,12 @@ public:
 		pros::delay(1200);
 
 		lift_Front.move_relative(1000, 100);
-		pros::delay(900);
+
+		// Wait until arm moves up, or time expires
+		auto time = pros::c::millis();
+		while (m_sensor.get_value() < 500 || pros::c::millis() - time < 2000) {
+			pros::delay(10);
+		}
 
 		Move(-2800, 200);
 	}
