@@ -83,7 +83,7 @@ class Autonomous
 	pros::Motor lift_Front{frontLift, MOTOR_GEARSET_36, true}; // Pick correct gearset (36 is red)
 	pros::Motor lift_Back{backLift, MOTOR_GEARSET_36, true};
 
-	void Move(int ticks, int speed)
+	void MoveLegacy(int ticks, int speed)
 	{
 		left_front.move_relative(ticks, speed);
 		left_middle.move_relative(ticks, speed);
@@ -92,6 +92,43 @@ class Autonomous
 		right_front.move_relative(ticks, speed);
 		right_middle.move_relative(ticks, speed);
 		right_back.move_relative(-ticks, speed);
+	}
+
+	void Move(unsigned int ticks, int speed)
+	{
+		speed = speed * 127 / 200;
+	
+		left_front.move(speed);
+		left_middle.move(speed);
+		left_back.move(speed);
+		right_front.move(speed);
+		right_middle.move(speed);
+		right_back.move(-speed);
+
+		auto pos = getPos();
+		while (abs(getPos() - pos) < ticks) {
+			pros::c::delay(10);
+		}
+
+		left_front.move(0);
+		left_middle.move(0);
+		left_back.move(0);
+
+		right_front.move(0);
+		right_middle.move(0);
+		right_back.move(0);
+	}
+
+	int getLeftPos() {
+		return (left_front.get_position() + left_middle.get_position() + left_back.get_position()) / 3;
+	}
+
+	int getRightPos() {
+		return (right_front.get_position() + right_middle.get_position() + right_back.get_position()) / 3;
+	}
+
+	int getPos() {
+		return (getLeftPos() + getRightPos()) / 2;
 	}
 
 	void Turn(double degrees, int speed)
@@ -113,10 +150,12 @@ public:
 		pros::c::adi_digital_write(PneumaticsPort, HIGH); // write LOW to port 1 (solenoid may be extended or not, depending on wiring)
 
 		//moving forward to goal
-		Move(3200, 150);
-
 		lift_Front.move_relative(-1800, 100);
-		pros::delay(1300);
+		pros::delay(200);
+
+		Move(2500, 150);
+		Move(700, 100);
+
 
 		lift_Front.move_relative(1000, 100);
 		pros::delay(950);
