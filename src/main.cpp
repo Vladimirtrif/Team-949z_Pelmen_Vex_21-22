@@ -105,6 +105,11 @@ class Autonomous
 		right_back.move_relative((degrees/360) * 3525, speed);
 	}
 
+	void SideClaw(bool directionUp, bool sideLeft)  //side True = left, side False = right   //direction True = up, direction False = down
+	{
+		pros::c::adi_digital_write(sideLeft ? LeftClaw : RightClaw, directionUp ? HIGH : LOW);
+	}
+
 public:
 	void run()
 	{
@@ -112,6 +117,16 @@ public:
 		pros::c::adi_pin_mode(PneumaticsPort, OUTPUT);
 		pros::c::adi_digital_write(PneumaticsPort, HIGH); // write LOW to port 1 (solenoid may be extended or not, depending on wiring)
 
+		pros::c::adi_pin_mode(LeftClaw, OUTPUT);
+		pros::c::adi_digital_write(LeftClaw, HIGH); 
+
+		pros::c::adi_pin_mode(RightClaw, OUTPUT);
+		pros::c::adi_digital_write(RightClaw, HIGH);
+
+
+		
+		SideClaw(false, true);
+		SideClaw(false, false);
 		//moving forward to goal
 		Move(3200, 150);
 
