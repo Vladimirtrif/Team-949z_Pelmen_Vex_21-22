@@ -83,16 +83,43 @@ class Autonomous
 	pros::Motor lift_Front{frontLift, MOTOR_GEARSET_36, true}; // Pick correct gearset (36 is red)
 	pros::Motor lift_Back{backLift, MOTOR_GEARSET_36, true};
 
-	void Move(int ticks, int speed)
-	{
-		left_front.move_relative(ticks, speed);
-		left_middle.move_relative(ticks, speed);
-		left_back.move_relative(ticks, speed);
-
-		right_front.move_relative(ticks, speed);
-		right_middle.move_relative(ticks, speed);
-		right_back.move_relative(-ticks, speed);
+	int getLeftPos() {
+		return (left_front.get_position() + left_middle.get_position() + left_back.get_position()) / 3;
 	}
+
+	int getRightPos() {
+		return (right_front.get_position() + right_middle.get_position() + right_back.get_position()) / 3;
+	}
+
+	int getPos() {
+		return (getLeftPos() + getRightPos()) / 2;
+	}
+void Move(int ticks, int speed, bool FLiftOn, int FTicks, int FSpeed) {
+     int startPos = getPos();
+	 int LiftstartPos = lift_Front.get_position();
+        left_front.move(speed* 127/200);
+		left_middle.move(speed* 127/200);
+		left_back.move(speed* 127/200);
+		right_front.move(speed* 127/200);
+		right_middle.move(speed* 127/200);
+		right_back.move(-speed* 127/200);
+		lift_Front.move(FSpeed);
+	while (abs(getPos() - startPos) < ticks) {
+		if (abs(lift_Front.get_position() - LiftstartPos) == FTicks) {
+			lift_Front.move(0);
+		}
+		pros::c::delay(10);
+	}
+	left_front.move(0);
+	left_middle.move(0);
+	left_back.move(0);
+	right_front.move(0);
+	right_middle.move(0);
+	right_back.move(0);
+    
+	lift_Front.move(0);
+	pros::c::delay(100);
+}
 
 	void Turn(double degrees, int speed)
 	{ //code tp turn, find value to plug in instead or 1 for amount of ticks it takes to turn 360 degrees, positive is right turn, negative degrees is left turn
@@ -108,52 +135,67 @@ class Autonomous
 public:
 	void run()
 	{
+		bool rightAuton = false;
+		bool leftAuton = true;
+		if (rightAuton == true) {
 		lift_Front.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-		pros::c::adi_pin_mode(PneumaticsPort, OUTPUT);
-		pros::c::adi_digital_write(PneumaticsPort, HIGH); // write LOW to port 1 (solenoid may be extended or not, depending on wiring)
+		pros::c::adi_pin_mode(ConveyorPort, OUTPUT);
+		pros::c::adi_digital_write(ConveyorPort, HIGH);
+		pros::c::adi_pin_mode(SideArmLeftPort, OUTPUT);
+		pros::c::adi_digital_write(SideArmLeftPort, LOW);
+		pros::c::adi_pin_mode(SideArmRightPort, OUTPUT);
+		pros::c::adi_digital_write(SideArmRightPort, LOW);
 
-		//moving forward to goal
-		Move(3200, 150);
-
-		lift_Front.move_relative(-1800, 100);
+		//moving forward to goal and picking it up
+		Move(2500, 150, true, 1850, -200);
+		lift_Front.move_relative(10000, 100);
 		pros::delay(1300);
 
-		lift_Front.move_relative(1000, 100);
-		pros::delay(950);
+		//moving back
+		Move(1400, -200, false, 0, 0);
 
-		Move(-2000, 150);
-		pros::delay(1000);
-
-		Turn(-90, 150);
-		pros::delay(1600);
-
-		Move(800, 150);
-		pros::delay(1100);
-
-		lift_Back.move_relative(-2000, 100);
-		pros::delay(1100);
-
-		Move(-1700, 150);
-		pros::delay(1800);
-
-		lift_Back.move_relative(1000, 100);
+		//turn and pick up allience goal
+		Turn(-92, 150);
 		pros::delay(1500);
+		Move(100, 150, false, 0,0);
+		lift_Back.move_relative(-2000, 100);
+		pros::delay(1300);
+		Move(950, -150, false, 0, 0);
+		lift_Back.move_relative(1150, 100);
 
+		//turn to face rings
 		Turn(10, 150);
 		pros::delay(400);
 
-		Move(1800, 150);
-		pros::delay(1000);
-
-		pros::c::adi_digital_write(PneumaticsPort, LOW);
+		//move towards rings, start conveyor, and pick up rings
+		Move(1000, 150, false, 0, 0);
+		pros::c::adi_digital_write(ConveyorPort, LOW);
 		pros::delay(250);
 		lift_Back.move_velocity(-100);
 		pros::delay(250);
+		Move(1500,100, false, 0, 0);
+		pros::c::adi_digital_write(ConveyorPort, HIGH);
 
-		Move(3000,100);
-		pros::delay(1400);
+		//move back
+		Move(1000,-100,false, 0, 0);
+		}
+		else if (leftAuton == true) {
+			lift_Front.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+			pros::c::adi_pin_mode(ConveyorPort, OUTPUT);
+			pros::c::adi_digital_write(ConveyorPort, HIGH);
+			pros::c::adi_pin_mode(SideArmLeftPort, OUTPUT);
+			pros::c::adi_digital_write(SideArmLeftPort, LOW);
+			pros::c::adi_pin_mode(SideArmRightPort, OUTPUT);
+			pros::c::adi_digital_write(SideArmRightPort, LOW);
+			//moving forward to goal and picking it up
+			Move(2900, 150, true, 1850, -200);
+			lift_Front.move_relative(10000, 100);
+			pros::delay(1300);
 
-		Move(-2000,100);
+			//moving back
+			Move(1900, -200, false, 0, 0);
+		}
+		
 	}
 };
 
@@ -206,8 +248,14 @@ void opcontrol()
 	lift_Front.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 	lift_Back.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 
-	pros::c::adi_pin_mode(PneumaticsPort, OUTPUT);
-	pros::c::adi_digital_write(PneumaticsPort, HIGH); // write LOW to port 1 (solenoid may be extended or not, depending on wiring)
+	pros::c::adi_pin_mode(ConveyorPort, OUTPUT);
+	pros::c::adi_digital_write(ConveyorPort, HIGH); // write LOW to port 1 (solenoid may be extended or not, depending on wiring)
+
+	pros::c::adi_pin_mode(SideArmLeftPort, OUTPUT);
+	pros::c::adi_digital_write(SideArmLeftPort, LOW);
+	pros::c::adi_pin_mode(SideArmRightPort, OUTPUT);
+	pros::c::adi_digital_write(SideArmRightPort, LOW);
+	bool SideArmsDown = false;
 
 	bool ConveyorOn = false;
 	int dead_Zone = 10; //the deadzone for the joysticks
@@ -285,7 +333,7 @@ void opcontrol()
 		{
 			lift_Back.move_velocity(0);
 			ConveyorOn = true;
-			pros::c::adi_digital_write(PneumaticsPort, LOW);
+			pros::c::adi_digital_write(ConveyorPort, LOW);
 			pros::delay(250);
 			lift_Back.move_velocity(-100);
 		}
@@ -294,7 +342,7 @@ void opcontrol()
 		{
 			lift_Back.move_velocity(0);
 			ConveyorOn = true;
-			pros::c::adi_digital_write(PneumaticsPort, LOW);
+			pros::c::adi_digital_write(ConveyorPort, LOW);
 			pros::delay(250);
 			lift_Back.move_velocity(100);
 		}
@@ -302,9 +350,22 @@ void opcontrol()
 		if (master.get_digital(DIGITAL_Y))
 		{
 			lift_Back.move_velocity(0);
-			pros::c::adi_digital_write(PneumaticsPort, HIGH);
+			pros::c::adi_digital_write(ConveyorPort, HIGH);
 			pros::delay(250);
 			ConveyorOn = false;
+		}
+		if (master.get_digital_new_press(DIGITAL_A))
+		{
+			if(SideArmsDown == false) {
+			pros::c::adi_digital_write(SideArmLeftPort, HIGH);
+			pros::c::adi_digital_write(SideArmRightPort, HIGH);
+			SideArmsDown = true;
+			}
+			else {
+				pros::c::adi_digital_write(SideArmLeftPort, LOW);
+				pros::c::adi_digital_write(SideArmRightPort, LOW);
+				SideArmsDown = false;
+			}
 		}
 		left_front.move(leftSpeed * 1.574);
 		left_middle.move(leftSpeed * 1.574);
