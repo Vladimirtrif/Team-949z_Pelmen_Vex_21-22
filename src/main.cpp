@@ -126,7 +126,7 @@ void Move(int ticks, int Lspeed, int Rspeed, bool FLiftOn, int FTicks, int FSpee
 }
 
 	void Turn(double degrees, int speed)
-	{ //code tp turn, find value to plug in instead or 1 for amount of ticks it takes to turn 360 degrees, positive is right turn, negative degrees is left turn
+	{ 
 		left_front.move_relative((degrees/360) * 3525, speed);
 		left_middle.move_relative((degrees/360) * 3525, speed);
 		left_back.move_relative((degrees/360) * 3525, speed);
@@ -139,7 +139,7 @@ void Move(int ticks, int Lspeed, int Rspeed, bool FLiftOn, int FTicks, int FSpee
 public:
 	void run()
 	{
-		int autonSide = 3;
+		int autonSide = 1; //1 is right goal rush + auton point, 2 is left goal rush, 3 is right wings goal rush
 		if (autonSide == 1) {
 		lift_Front.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 		pros::c::adi_pin_mode(ConveyorPort, OUTPUT);
@@ -150,8 +150,9 @@ public:
 		pros::c::adi_digital_write(SideArmRightPort, LOW);
 
 		//moving forward to goal and picking it up
-		Move(2500, 150, 150, true, 1850, -200);
-		lift_Front.move_relative(10000, 100);
+		Move(2000, 150, 150, true, 1850, -200);
+		Move(700, 10, 150, true, 0, 0);
+		/*lift_Front.move_relative(10000, 100);
 		pros::delay(1300);
 
 		//moving back
@@ -180,7 +181,7 @@ public:
 		pros::c::adi_digital_write(ConveyorPort, HIGH);
 
 		//move back
-		Move(1000,-100, -100, false, 0, 0);
+		Move(1000,-100, -100, false, 0, 0);*/
 		}
 		else if (autonSide == 2) {
 			lift_Front.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
@@ -359,7 +360,7 @@ void opcontrol()
 			ConveyorOn = true;
 			pros::c::adi_digital_write(ConveyorPort, LOW);
 			pros::delay(250);
-			lift_Back.move_velocity(-75);
+			lift_Back.move_velocity(-100);
 		}
 
 		if (master.get_digital(DIGITAL_X))
@@ -368,7 +369,7 @@ void opcontrol()
 			ConveyorOn = true;
 			pros::c::adi_digital_write(ConveyorPort, LOW);
 			pros::delay(250);
-			lift_Back.move_velocity(75);
+			lift_Back.move_velocity(100);
 		}
 
 		if (master.get_digital(DIGITAL_Y))
