@@ -150,38 +150,37 @@ public:
 		pros::c::adi_digital_write(SideArmRightPort, LOW);
 
 		//moving forward to goal and picking it up
-		Move(2000, 150, 150, true, 1850, -200);
-		Move(700, 10, 150, true, 0, 0);
-		/*lift_Front.move_relative(10000, 100);
+		//Move(2500, 150, 150, true, 1850, -200);
+		Move(2000, 200, 200, true, 1700, -200);
+		Move(260, 10, 150, true, 0, 0);
+		lift_Front.move_relative(10000, 100);
 		pros::delay(1300);
-
-		//moving back
-		Move(1650, -200, -200, false, 0, 0);
-
-		//turn and pick up allience goal
-		Turn(-92, 150);
-		pros::delay(1500);
-		Move(100, 150, 150, false, 0,0);
-		lift_Back.move_relative(-2000, 100);
-		pros::delay(1300);
-		Move(950, -150, -150, false, 0, 0);
+		lift_Back.move_relative(-2100, 100);
+		pros::delay(1400);
+		Move(1200, -150, -150, false, 0, 0);
+		pros::delay(50);
 		lift_Back.move_relative(1150, 100);
-
-		//turn to face rings
-		Turn(10, 150);
-		pros::delay(400);
-
-		//move towards rings, start conveyor, and pick up rings
-		Move(1000, 150, 150, false, 0, 0);
+		pros::delay(1300);
+		Move(600, 150, 150, false, 0, 0);
+		Turn(-145, 150);
+		pros::delay(1400);
+	   //start conveyor, move towards placed rings, pick up rings
 		pros::c::adi_digital_write(ConveyorPort, LOW);
 		pros::delay(250);
 		lift_Back.move_velocity(-100);
 		pros::delay(250);
-		Move(1500,100, 100, false, 0, 0);
-		pros::c::adi_digital_write(ConveyorPort, HIGH);
-
+		Move(2250,100, 100, false, 0, 0);
+		pros::delay(500);
 		//move back
-		Move(1000,-100, -100, false, 0, 0);*/
+		Move(1000,-100, -100, false, 0, 0);
+		pros::delay(1500);
+		Move(1000,100, 100, false, 0, 0);
+		pros::delay(500);
+		//move back
+		Move(1000,-100, -100, false, 0, 0);
+		pros::c::adi_digital_write(ConveyorPort, HIGH);
+		
+
 		}
 		else if (autonSide == 2) {
 			lift_Front.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
