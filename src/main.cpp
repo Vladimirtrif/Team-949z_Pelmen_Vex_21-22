@@ -139,7 +139,7 @@ void Move(int ticks, int Lspeed, int Rspeed, bool FLiftOn, int FTicks, int FSpee
 public:
 	void run()
 	{
-		int autonSide = 1; //1 is right goal rush + auton point, 2 is left goal rush, 3 is right wings goal rush
+		int autonSide = 2; //1 is right goal rush + auton point, 2 is left goal rush, 3 is right wings goal rush
 		if (autonSide == 1) {
 		lift_Front.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 		pros::c::adi_pin_mode(ConveyorPort, OUTPUT);
@@ -191,13 +191,16 @@ public:
 			pros::c::adi_pin_mode(SideArmRightPort, OUTPUT);
 			pros::c::adi_digital_write(SideArmRightPort, LOW);
 			//moving forward to goal and picking it up
-			Move(2900, 150, 150, true, 1850, -200);
+			Move(2000, 200, 200, true, 1700, -200);
+			Move(500, 160, 10, true, 1000, 100);
 			lift_Front.move_relative(10000, 100);
 			pros::delay(1300);
+			Move(500, -160, -160, true, 0, 0);
+			pros::delay(200);
+			Turn(-67, 150);
+			pros::delay(1000);
+			lift_Back.move_relative(-2100, 100);
 
-			//moving back
-			Move(2800, -200, -200, false, 0, 0);
-			Turn(-90, 150);
 
 		}
 		else if (autonSide == 3) {
