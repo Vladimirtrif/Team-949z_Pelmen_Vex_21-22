@@ -239,25 +239,6 @@ public:
  */
 void autonomous()
 {
-	while (true)
-	{
-		if (pros::lcd::read_buttons() == 4)
-		{
-			autonSide = 1;
-		}
-		else if (pros::lcd::read_buttons() == 2)
-		{
-			autonSide = 2;
-		}
-		if (autonSide == 1)
-		{
-			pros::lcd::set_text(1, "Selected Auton is Right");
-		}
-		if (autonSide == 2)
-		{
-			pros::lcd::set_text(1, "Selected Auton is Left");
-		}
-	}
 	Autonomous self_drive;
 	self_drive.run();
 }
