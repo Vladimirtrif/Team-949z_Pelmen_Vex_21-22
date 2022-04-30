@@ -167,8 +167,9 @@ class Autonomous
 		right_middle.move_relative((degrees / 360) * -3525, speed);
 		right_back.move_relative((degrees / 360) * 3525, speed);
 	}
-	void MoveVisionAssisted(int ticks, int speed) {
+	void MoveVisionAssisted(int ticks, int speed, bool FLiftOn, int FTicks, int FSpeed) {
 		int startPos = getPos();
+		int LiftstartPos = lift_Front.get_position();
 
 		while (abs(getPos() - startPos) < ticks) {
 			int Lspeed = speed;
@@ -199,12 +200,18 @@ class Autonomous
 				}
 			}	
 
-			left_front.move(Lspeed);           
-			left_middle.move(Lspeed);
-			left_back.move(Lspeed);
-			right_front.move(Rspeed);
-			right_middle.move(Rspeed);
-			right_back.move(-Rspeed);
+			left_front.move(Lspeed * 127 / 200);           
+			left_middle.move(Lspeed * 127 / 200);
+			left_back.move(Lspeed * 127 / 200);
+			right_front.move(Rspeed * 127 / 200);
+			right_middle.move(Rspeed * 127 / 200);
+			right_back.move(-Rspeed * 127 / 200);
+
+			lift_Front.move(FSpeed);
+			if (abs(lift_Front.get_position() - LiftstartPos) == FTicks)
+			{
+				lift_Front.move(0);
+			}
 
 			pros::c::delay(10);		
 		}
@@ -232,7 +239,6 @@ public:
 			pros::c::adi_digital_write(SideArmRightPort, LOW);
 
 			// moving forward to goal and picking it up
-			// Move(2500, 150, 150, true, 1850, -200);
 			Move(2000, 200, 200, true, 1700, -200);
 			Move(260, 10, 150, true, 0, 0);
 			lift_Front.move_relative(10000, 100);
