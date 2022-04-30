@@ -167,9 +167,9 @@ class Autonomous
 		right_middle.move_relative((degrees / 360) * -3525, speed);
 		right_back.move_relative((degrees / 360) * 3525, speed);
 	}
-	void MoveVisionAssisted(int ticks, int speed, bool FLiftOn, int FTicks, int FSpeed) {
+	void MoveVisionAssisted(int ticks, int speed, bool BLiftOn, int BTicks, int BSpeed) {
 		int startPos = getPos();
-		int LiftstartPos = lift_Front.get_position();
+		int BLiftstartPos = lift_Back.get_position();
 
 		while (abs(getPos() - startPos) < ticks) {
 			int Lspeed = speed;
@@ -207,10 +207,10 @@ class Autonomous
 			right_middle.move(Rspeed * 127 / 200);
 			right_back.move(-Rspeed * 127 / 200);
 
-			lift_Front.move(FSpeed);
-			if (abs(lift_Front.get_position() - LiftstartPos) == FTicks)
+			lift_Back.move(BSpeed);
+			if (abs(lift_Back.get_position() - BLiftstartPos) == BTicks)
 			{
-				lift_Front.move(0);
+				lift_Back.move(0);
 			}
 
 			pros::c::delay(10);		
