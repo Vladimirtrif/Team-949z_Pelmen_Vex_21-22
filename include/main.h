@@ -85,6 +85,14 @@ void opcontrol(void);
 #define SideArmLeftPort 'B'
 #define SideArmRightPort 'C'
 
+#define VisionPort 10
+#define RedSignature 1
+#define YellowSignature 2
+
+#define RedSignatureId 1
+#define BlueSignatureId 2
+#define YellowSignatureId 3
+
 #ifdef __cplusplus
 /**
  * You can add C++-only headers here

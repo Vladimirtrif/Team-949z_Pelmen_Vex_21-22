@@ -2,6 +2,10 @@
 #include "pros/adi.h"
 #include "pros/api_legacy.h"
 #include "pros/llemu.hpp"
+#include "pros/vision.hpp"
+#include "pros/vision.h"
+
+
 /*
  * Presence of these two variables here replaces _pros_ld_timestamp step in common.mk.
  * THis way we get equivalent behavior without extra .c file to compile, and this faster build.
@@ -12,6 +16,10 @@
  */
 extern "C" char const *const _PROS_COMPILE_TIMESTAMP = __DATE__ " " __TIME__;
 extern "C" char const *const _PROS_COMPILE_DIRECTORY = "";
+
+#define max(a,b) ((a) < (b) ? (b) : (a))
+#define min(a,b) ((a) < (b) ? (a) : (b))
+#define sign(x) ((x) > 0 ? 1 : -1)
 
 int autonSide; // 1 is right goal rush + auton point, 2 is left goal rush, 3 is right wings goal rush
 
@@ -102,6 +110,8 @@ class Autonomous
 
 	pros::Motor lift_Front{frontLift, MOTOR_GEARSET_36, true}; // Pick correct gearset (36 is red)
 	pros::Motor lift_Back{backLift, MOTOR_GEARSET_36, true};
+	pros::Vision vision_sensor{VisionPort, pros::E_VISION_ZERO_CENTER};
+
 
 	int getLeftPos()
 	{
@@ -156,6 +166,55 @@ class Autonomous
 		right_front.move_relative((degrees / 360) * -3525, speed);
 		right_middle.move_relative((degrees / 360) * -3525, speed);
 		right_back.move_relative((degrees / 360) * 3525, speed);
+	}
+	void MoveVisionAssisted(int ticks, int speed) {
+		int startPos = getPos();
+
+		while (abs(getPos() - startPos) < ticks) {
+			int Lspeed = speed;
+			int Rspeed = speed;
+
+			if (vision_sensor.get_object_count() > 0) {
+				pros::vision_object_s_t obj;
+				
+				if(vision_sensor.read_by_size(0, 1, &obj) == 1 && obj.top_coord + obj.height > 0) {
+					// Positive offset means goal is left due to sensor being mounted upside down
+					float offset = obj.x_middle_coord * sign(speed);
+					printf("%d  %d\n", obj.width, obj.top_coord + obj.height);
+					if(abs(offset) > 0.05) {
+						if (offset < 0){
+							Rspeed = speed * (1 + max(offset, -100) * 0.005);
+							// Rspeed = -50;
+							// Lspeed = 50;
+						}
+						else {
+							Lspeed = speed * (1 - min(offset, 100) * 0.005);
+							// Rspeed = 50;
+							// Lspeed = -50;
+						}
+					}
+					if (obj.width > 280) {    //checks if the object is too close
+						break;
+					}            
+				}
+			}	
+
+			left_front.move(Lspeed);           
+			left_middle.move(Lspeed);
+			left_back.move(Lspeed);
+			right_front.move(Rspeed);
+			right_middle.move(Rspeed);
+			right_back.move(-Rspeed);
+
+			pros::c::delay(10);		
+		}
+
+		left_front.move(0);
+		left_middle.move(0);
+		left_back.move(0);
+		right_front.move(0);
+		right_middle.move(0);
+		right_back.move(0);
 	}
 
 public:
