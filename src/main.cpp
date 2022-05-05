@@ -170,8 +170,9 @@ class Autonomous
 	void MoveVisionAssisted(int ticks, int speed, bool BLiftOn, int BTicks, int BSpeed) {
 		int startPos = getPos();
 		int BLiftstartPos = lift_Back.get_position();
+		int timer = 300;
 
-		while (abs(getPos() - startPos) < ticks) {
+		while (abs(getPos() - startPos) < ticks && timer > 0) {
 			int Lspeed = speed;
 			int Rspeed = speed;
 
@@ -212,8 +213,8 @@ class Autonomous
 			{
 				lift_Back.move(0);
 			}
-
-			pros::c::delay(10);		
+			timer--;
+			pros::c::delay(10);	
 		}
 
 		left_front.move(0);
@@ -227,10 +228,16 @@ class Autonomous
 public:
 	void run()
 	{
+		pros::vision_signature_s_t sig1 = pros::c::vision_signature_from_utility(1, -2123, -1397, -1760, 8387, 10923, 9654, 3.100, 0);
+		pros::vision_signature_s_t sig2 = pros::c::vision_signature_from_utility(2, 8257, 10627, 9442, -863, -373, -618, 2.000, 0);
+		vision_sensor.set_signature(1, &sig1);
+		vision_sensor.set_signature(2, &sig2);
+
 
 		if (autonSide == 1)
 		{
 			lift_Front.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+			lift_Back.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 			pros::c::adi_pin_mode(ConveyorPort, OUTPUT);
 			pros::c::adi_digital_write(ConveyorPort, HIGH);
 			pros::c::adi_pin_mode(SideArmLeftPort, OUTPUT);
@@ -259,7 +266,17 @@ public:
 			pros::delay(250);
 			Move(1550, 100, 100, false, 0, 0);
 			pros::delay(500);
-			// move back
+			// move back and forth
+			Move(1000, -100, -100, false, 0, 0);
+			pros::delay(1500);
+			Move(1000, 100, 100, false, 0, 0);
+			pros::delay(500);
+			// move back and forth
+			Move(1000, -100, -100, false, 0, 0);
+			pros::delay(1500);
+			Move(1000, 100, 100, false, 0, 0);
+			pros::delay(500);
+			// move back and forth
 			Move(1000, -100, -100, false, 0, 0);
 			pros::delay(1500);
 			Move(1000, 100, 100, false, 0, 0);
@@ -270,7 +287,9 @@ public:
 		}
 		else if (autonSide == 2)
 		{
+			
 			lift_Front.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+			lift_Back.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 			pros::c::adi_pin_mode(ConveyorPort, OUTPUT);
 			pros::c::adi_digital_write(ConveyorPort, HIGH);
 			pros::c::adi_pin_mode(SideArmLeftPort, OUTPUT);
@@ -289,10 +308,9 @@ public:
 			lift_Back.move_relative(-4000, 100);
 			pros::delay(1500);
 			MoveVisionAssisted(800, -150, false, 0, 0);
-			lift_Back.move_relative(1150, 100);
+			lift_Back.move_relative(2000, 100);
 			pros::c::adi_digital_write(ConveyorPort, LOW);
-
-
+			lift_Back.move_velocity(-100);
 		}
 	}
 };
