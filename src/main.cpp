@@ -21,7 +21,7 @@ extern "C" char const *const _PROS_COMPILE_DIRECTORY = "";
 #define min(a,b) ((a) < (b) ? (a) : (b))
 #define sign(x) ((x) > 0 ? 1 : -1)
 
-int autonSide; // 1 is right goal rush + auton point, 2 is left goal rush, 3 is right wings goal rush
+int autonSide = 1; // 1 is right goal rush + auton point, 2 is left goal rush, 3 is right wings goal rush
 
 /**
  * A callback function for LLEMU's center button.
@@ -245,7 +245,7 @@ public:
 			pros::delay(1300);
 			lift_Back.move_relative(-2100, 100);
 			pros::delay(1400);
-			Move(1200, -150, -150, false, 0, 0);
+			MoveVisionAssisted(2000, -150, false, 0, 0);
 			pros::delay(50);
 			lift_Back.move_relative(1150, 100);
 			pros::delay(1300);
@@ -257,7 +257,7 @@ public:
 			pros::delay(250);
 			lift_Back.move_velocity(-100);
 			pros::delay(250);
-			Move(2250, 100, 100, false, 0, 0);
+			Move(1550, 100, 100, false, 0, 0);
 			pros::delay(500);
 			// move back
 			Move(1000, -100, -100, false, 0, 0);
@@ -279,14 +279,20 @@ public:
 			pros::c::adi_digital_write(SideArmRightPort, LOW);
 			// moving forward to goal and picking it up
 			Move(2000, 200, 200, true, 1700, -200);
-			Move(500, 160, 10, true, 1000, 100);
+			Move(300, 160, 10, true, 1000, 100);
 			lift_Front.move_relative(10000, 100);
 			pros::delay(1300);
-			Move(500, -160, -160, true, 0, 0);
+			Move(1400, -160, -160, true, 0, 0);
 			pros::delay(200);
-			Turn(-67, 150);
+			Turn(-54, 150);
 			pros::delay(1000);
-			lift_Back.move_relative(-2100, 100);
+			lift_Back.move_relative(-4000, 100);
+			pros::delay(1500);
+			MoveVisionAssisted(800, -150, false, 0, 0);
+			lift_Back.move_relative(1150, 100);
+			pros::c::adi_digital_write(ConveyorPort, LOW);
+
+
 		}
 	}
 };
